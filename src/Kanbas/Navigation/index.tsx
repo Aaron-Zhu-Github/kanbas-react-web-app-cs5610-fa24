@@ -7,7 +7,7 @@ export default function KanbasNavigation() {
       <li><a id="wd-course-link" href="#/Kanbas/Courses/Home">Courses</a></li>
       <li><a id="wd-calendar-link" href="#/Kanbas/Calendar">Calendar</a></li>
       <li><a id="wd-inbox-link" href="#/Kanbas/Inbox">Inbox</a></li>
-      <li><a id="wd-labs-link" href="#/LandingPage">Landing Page</a></li>
+      <li><a id="wd-labs-link" href="#/Labs">Landing Page</a></li>
     </ul> 
   );
 }
