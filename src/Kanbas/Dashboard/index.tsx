@@ -11,7 +11,7 @@ export default function Dashboard() {
             <div className="card">
               <Link className="wd-dashboard-course-link text-decoration-none text-dark"
                     to="/Kanbas/Courses/1234/Home">
-                <img src="/images/reactjs.jpg" width="100%"/>
+                <img src="/images/reactjs.jpg" width="100%" alt=""/>
                 <div className="card-body">
                   <h5 className="wd-dashboard-course-title card-title">
                       CS1234 React JS
@@ -30,7 +30,7 @@ export default function Dashboard() {
             <div className="card">
               <Link className="wd-dashboard-course-link text-decoration-none text-dark"
                     to="/Kanbas/Courses/1234/Home">
-                <img src="/images/pdp.jpg" width="100%"/>
+                <img src="/images/pdp.jpg" width="100%" alt=""/>
                 <div className="card-body">
                   <h5 className="wd-dashboard-course-title card-title">
                       CS5010 Programming
@@ -49,7 +49,7 @@ export default function Dashboard() {
             <div className="card">
               <Link className="wd-dashboard-course-link text-decoration-none text-dark"
                     to="/Kanbas/Courses/1234/Home">
-                <img src="/images/algorithms.jpg" width="100%"/>
+                <img src="/images/algorithms.jpg" width="100%" alt=""/>
                 <div className="card-body">
                   <h5 className="wd-dashboard-course-title card-title">
                       CS5800 Algorithms
@@ -68,7 +68,7 @@ export default function Dashboard() {
             <div className="card">
               <Link className="wd-dashboard-course-link text-decoration-none text-dark"
                     to="/Kanbas/Courses/1234/Home">
-                <img src="/images/cloud.jpg" width="100%"/>
+                <img src="/images/cloud.jpg" width="100%" alt=""/>
                 <div className="card-body">
                   <h5 className="wd-dashboard-course-title card-title">
                       CS6620 Cloud Comp
@@ -87,7 +87,7 @@ export default function Dashboard() {
             <div className="card">
               <Link className="wd-dashboard-course-link text-decoration-none text-dark"
                     to="/Kanbas/Courses/1234/Home">
-                <img src="/images/dms.jpg" width="100%"/>
+                <img src="/images/dms.jpg" width="100%" alt=""/>
                 <div className="card-body">
                   <h5 className="wd-dashboard-course-title card-title">
                       CS5200 Database
@@ -106,7 +106,7 @@ export default function Dashboard() {
             <div className="card">
               <Link className="wd-dashboard-course-link text-decoration-none text-dark"
                     to="/Kanbas/Courses/1234/Home">
-                <img src="/images/mad.jpg" width="100%"/>
+                <img src="/images/mad.jpg" width="100%" alt=""/>
                 <div className="card-body">
                   <h5 className="wd-dashboard-course-title card-title">
                       CS5520 Mobile App
@@ -125,7 +125,7 @@ export default function Dashboard() {
             <div className="card">
               <Link className="wd-dashboard-course-link text-decoration-none text-dark"
                     to="/Kanbas/Courses/1234/Home">
-                <img src="/images/ai.jpg" width="100%"/>
+                <img src="/images/ai.jpg" width="100%" alt=""/>
                 <div className="card-body">
                   <h5 className="wd-dashboard-course-title card-title">
                       CS5100 Artificial
