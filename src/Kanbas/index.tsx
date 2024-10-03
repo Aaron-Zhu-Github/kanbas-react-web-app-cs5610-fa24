@@ -7,29 +7,32 @@ import Courses from "./Courses";
 import Account from "./Account";
 // import Calendar from "./Calendar";
 // import Inbox from "./Inbox";
+import "./styles.css";
 export default function Kanbas() {
     return (
       <div id="wd-kanbas">
-        <h1>Kanbas</h1>
+        {/* <h1>Kanbas</h1>
         <table>
           <tbody>
             <tr>
-              <td valign="top">
+              <td valign="top"> */}
                 <KanbasNavigation />
-              </td>
-              <td valign="top">
+              {/* </td> */}
+              {/* <td valign="top"> */}
+              <div className="wd-main-content-offset p-3">
                 <Routes>
-                  <Route path="/" element={<Navigate to="Account" />} />
+                  <Route path="/" element={<Navigate to="Dashboard" />} />
                   <Route path="/Account/*" element={<Account />} />
                   <Route path="/Dashboard" element={<Dashboard />} />
                   <Route path="/Courses/:cid/*" element={<Courses />} />
                   <Route path="/Calendar" element={<h1>Calendar</h1>} />
                   <Route path="/Inbox" element={<h1>Inbox</h1>} />
                 </Routes>
-              </td>
+              </div>
+              {/* </td>
             </tr>
           </tbody>
-        </table>
+        </table> */}
       </div>
     );
   }
