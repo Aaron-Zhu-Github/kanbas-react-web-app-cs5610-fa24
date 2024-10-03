@@ -284,7 +284,7 @@ export default function Lab2() {
               Blue </div>
             <div className="wd-float-left wd-dimension-portrait wd-bg-color-red">
               Red </div>
-            <img className="wd-float-right"
+            <img className="wd-float-right" alt=""
               src="https://www.staradvertiser.com/wp-content/uploads/2021/08/web1_Starship-gap2.jpg"/>
             <div className="wd-float-done"></div>
           </div>
@@ -762,7 +762,7 @@ export default function Lab2() {
           <h2>Cards</h2>
           <div className="card"
               style={{ width: "18rem" }}>
-            <img src="images/stacked.jpg"
+            <img src="images/stacked.jpg" alt=""
                 className="card-img-top" />
             <div className="card-body">
               <h5 className="card-title">
