@@ -44,14 +44,5 @@ export default function KanbasNavigation() {
       <LiaCogSolid className="fs-1 text-danger" /><br />
       Labs </Link>
     </div>
-
-
-    //   <a id="wd-account-link" href="#/Kanbas/Account">Account</a></li>
-    //   <a id="wd-dashboard-link" href="#/Kanbas/Dashboard">Dashboard</a></li>
-    //   <a id="wd-course-link" href="#/Kanbas/Courses/Home">Courses</a></li>
-    //   <a id="wd-calendar-link" href="#/Kanbas/Calendar">Calendar</a></li>
-    //   <a id="wd-inbox-link" href="#/Kanbas/Inbox">Inbox</a></li>
-    //   <a id="wd-labs-link" href="#/Labs">Landing Page</a></li>
-    // </div>
   );
 }
