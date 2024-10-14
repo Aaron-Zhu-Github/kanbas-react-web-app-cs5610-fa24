@@ -11,7 +11,7 @@ export default function AssignmentEditor() {
   );
 
   if (!assignment) {
-    return <div>Assignment not found</div>;
+    return <div>Assignment is not found</div>;
   }
 
   return (
