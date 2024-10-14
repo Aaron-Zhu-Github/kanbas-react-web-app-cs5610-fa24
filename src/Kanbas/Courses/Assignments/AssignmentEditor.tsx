@@ -1,11 +1,26 @@
+import React from "react";
+import { useParams, Link } from "react-router-dom";
+import * as db from "../../Database";
+
 export default function AssignmentEditor() {
+  const { cid, aid } = useParams();
+  const { assignments } = db;
+
+  const assignment = assignments.find(
+    (assignment: any) => assignment.course === cid && assignment._id === aid
+  );
+
+  if (!assignment) {
+    return <div>Assignment not found</div>;
+  }
+
   return (
     <div id="wd-assignments-editor" className="p-4 border rounded">
       <label htmlFor="wd-name">Assignment Name</label>
       <input
         id="wd-name"
         className="form-control mb-4"
-        value="A1"
+        value={assignment.title}        
       />
 
       <label htmlFor="wd-description" className="mb-2">Assignment Description</label>
@@ -13,7 +28,7 @@ export default function AssignmentEditor() {
         id="wd-description"
         className="form-control mb-3"
         rows={6}
-        value="Here are the Assignment's details and instructions..."
+        value={assignment.description}        
       />
 
       <div className="mb-3 d-flex align-items-center">
@@ -22,7 +37,7 @@ export default function AssignmentEditor() {
           id="wd-points"
           type="number"
           className="form-control w-auto"
-          value={100}
+          value={assignment.point}        
         />
       </div>
 
@@ -80,50 +95,58 @@ export default function AssignmentEditor() {
       </div>
 
       <div className="mb-3 d-flex align-items-start">
-        <label htmlFor="wd-assign-to" className="me-2">Assign to</label>
+        <label htmlFor="wd-assign-to" className="me-2">Assign</label>
         <div className="border p-3 flex-grow-1">
+          <label><strong>Assign to</strong></label><br />
           <input
             id="wd-assign-to"
             className="form-control mb-3"
-            value="Everyone"
+            value=""
           />
 
-          <div className="mb-3 d-flex align-items-center">
-            <label htmlFor="wd-due-date" className="me-2">Due</label>
-            <input
-              id="wd-due-date"
-              type="datetime-local"
-              className="form-control w-auto"
-              value="2024-05-13T23:59"
-            />
+          <div className="col">
+            <label htmlFor="wd-due-date" className="me-2"><strong>Due</strong></label>
+            <div className="input-group">
+              <input
+                id="wd-due-date"
+                type="datetime-local"
+                className="form-control"
+                value={assignment.due}
+              />
+            </div>
           </div>
 
           <div className="row mb-2">
             <div className="col">
-              <label htmlFor="wd-available-from" className="me-2">Available from</label>
-              <input
-                id="wd-available-from"
-                type="datetime-local"
-                className="form-control"
-                value="2024-05-06T00:00"
-              />
+              <label htmlFor="wd-available-from" className="me-2"><strong>Available from</strong></label>
+              <div className="input-group">
+                <input
+                  id="wd-available-from"
+                  type="datetime-local"
+                  className="form-control"
+                  value={assignment.available}                 
+                />
+              </div>
             </div>
+
             <div className="col">
-              <label htmlFor="wd-available-until" className="me-2">Until</label>
-              <input
-                id="wd-available-until"
-                type="datetime-local"
-                className="form-control"
-                value="2024-05-20T23:59"
-              />
+              <label htmlFor="wd-available-until" className="me-2"><strong>Until</strong></label>
+              <div className="input-group">
+                <input
+                  id="wd-available-until"
+                  type="datetime-local"
+                  className="form-control"
+                  value={assignment.until}
+                />
+              </div>
             </div>
           </div>
         </div>
       </div>
 
       <div className="d-flex justify-content-end mt-4">
-        <button className="btn btn-secondary me-2">Cancel</button>
-        <button className="btn btn-danger">Save</button>
+        <Link to={`/Kanbas/Courses/${cid}/Assignments`} className="btn btn-secondary me-2">Cancel</Link>
+        <Link to={`/Kanbas/Courses/${cid}/Assignments`} className="btn btn-danger">Save</Link>
       </div>
     </div>
   );

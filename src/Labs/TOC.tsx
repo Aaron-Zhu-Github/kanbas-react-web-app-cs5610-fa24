@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 export default function TOC() {
   const { pathname } = useLocation();
   return (
-    <ul className="nav nav-pills">
+    <ul className="nav nav-pills" id="wd-toc">
       <li className="nav-item">
         <Link id="wd-a" to="/Labs" className="nav-link">
           Labs
@@ -26,7 +26,8 @@ export default function TOC() {
         </Link>
       </li>
       <li className="nav-item">
-        <Link id="wd-k" to="/Kanbas" className="nav-item">
+        {/* <Link id="wd-k" to="/Kanbas" className="nav-item"> */}
+        <Link id="wd-k" to="/Kanbas" className={`nav-link ${pathname.includes("Kanbas") ? "active" : ""}`}>
           Kanbas
         </Link>
       </li>

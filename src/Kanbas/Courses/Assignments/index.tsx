@@ -3,9 +3,17 @@ import { IoEllipsisVertical } from "react-icons/io5";
 import { PiNotebookBold } from "react-icons/pi";
 import { FaPlus } from "react-icons/fa6";
 import { SlMagnifier } from "react-icons/sl";
+import { GoTriangleDown } from "react-icons/go";
 
+import { useParams } from "react-router";
+import { Link } from "react-router-dom";
+import * as db from "../../Database";
+import GreenCheckmark from "./GreenCheckmark";
 
 export default function Assignments() {
+  const { cid } = useParams();
+  const assignments = db.assignments;
+  const courseAssignments = assignments.filter(assignment => assignment.course === cid);
   return (
     <div>
       <div id="wd-assignments-controls" className="d-flex justify-content-between mb-3">
@@ -34,6 +42,7 @@ export default function Assignments() {
           <div className="p-3 d-flex justify-content-between align-items-center bg-light">
             <div className="d-flex align-items-center">
               <BsGripVertical className="me-2 fs-3" />
+              <GoTriangleDown />
               <strong>ASSIGNMENTS</strong>
             </div>
             <div className="d-flex align-items-center">
@@ -53,71 +62,27 @@ export default function Assignments() {
           </div>
 
           <ul className="list-group rounded-0">
-            <li className="list-group-item wd-assignment p-3 d-flex justify-content-between align-items-center" style={{ borderLeft: "5px solid #28a745" }}>
-              <div className="d-flex align-items-center">
-                <PiNotebookBold className="me-2 fs-3 text-success" />
-                <BsGripVertical className="me-2 fs-3" />
-                <div>
-                  <a href="#/Kanbas/Courses/1234/Assignments/1">
-                    <h6><strong>A1 - ENV + HTML</strong></h6>
-                  </a>
-                  <h6>
-                    <span className="text-danger">Multiple Modules</span> | 
-                    <strong>Not available until</strong> May 6 at 12:00am |
-                  </h6>
-                  <h6>
-                    <strong>Due</strong> May 13 at 11:59pm | 100 pts
-                  </h6>
+            {courseAssignments.map((assignment) => (
+              <li key={assignment._id} className="list-group-item wd-assignment p-3 d-flex justify-content-between align-items-center" style={{ borderLeft: "5px solid #28a745" }}>
+                <div className="d-flex align-items-center">
+                  <PiNotebookBold className="me-2 fs-3 text-success" />
+                  <BsGripVertical className="me-2 fs-3" />
+                  <div>
+                    <Link to={`/Kanbas/Courses/${cid}/Assignments/${assignment._id}`}>
+                      <h6><strong>{assignment.title}</strong></h6>
+                    </Link>
+                    <span className="text-danger">Multiple Modules</span> |
+                      <strong> Not available until </strong> {assignment.available} <br />
+                      <strong> Due </strong> {assignment.due}
+                      {assignment.point} pts
+                  </div>
                 </div>
-              </div>
-              <div className="float-end">
-                <IoEllipsisVertical className="fs-4" />
-              </div>
-            </li>
-
-            <li className="list-group-item wd-assignment p-3 d-flex justify-content-between align-items-center" style={{ borderLeft: "5px solid #28a745" }}>
-              <div className="d-flex align-items-center">
-                <PiNotebookBold className="me-2 fs-3 text-success" /> 
-                <BsGripVertical className="me-2 fs-3" />
-                <div>
-                  <a href="#/Kanbas/Courses/1234/Assignments/2">
-                    <h6><strong>A2 - CSS + BOOTSTRAP</strong></h6>
-                  </a>
-                  <h6>
-                    <span className="text-danger">Multiple Modules</span> | 
-                    <strong>Not available until</strong> May 13 at 12:00am |
-                  </h6>
-                  <h6>
-                    <strong>Due</strong> May 20 at 11:59pm | 100 pts
-                  </h6>
+                <div className="float-end">
+                  <GreenCheckmark />
+                  <IoEllipsisVertical className="fs-4" />
                 </div>
-              </div>
-              <div className="float-end">
-                <IoEllipsisVertical className="fs-4" />
-              </div>
-            </li>
-
-            <li className="list-group-item wd-assignment p-3 d-flex justify-content-between align-items-center" style={{ borderLeft: "5px solid #28a745" }}>
-              <div className="d-flex align-items-center">
-                <PiNotebookBold className="me-2 fs-3 text-success" />
-                <BsGripVertical className="me-2 fs-3" />
-                <div>
-                  <a href="#/Kanbas/Courses/1234/Assignments/3">
-                    <h6><strong>A3 - JAVASCRIPT + REACT</strong></h6>
-                  </a>
-                  <h6>
-                    <span className="text-danger">Multiple Modules</span> | 
-                    <strong>Not available until</strong> May 20 at 12:00am |
-                  </h6>
-                  <h6>
-                    <strong>Due</strong> May 27 at 11:59pm | 100 pts
-                  </h6>
-                </div>
-              </div>
-              <div className="float-end">
-                <IoEllipsisVertical className="fs-4" />
-              </div>
-            </li>
+              </li>
+            ))}
           </ul>
         </li>
       </ul>
