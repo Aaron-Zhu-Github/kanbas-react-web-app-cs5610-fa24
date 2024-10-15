@@ -79,6 +79,33 @@
     },
 
     {
+      "_id": "M104",
+      "name": "Nozzle Design",
+      "description": "Principles of rocket nozzle design and performance optimization.",
+      "course": "RS101",
+      "lessons": [
+        {
+          "_id": "L401",
+          "name": "Nozzle Design",
+          "description": "Overview of different types of rocket nozzles.",
+          "module": "M104"
+        },
+        {
+          "_id": "L402",
+          "name": "Nozzle Performance",
+          "description": "Understanding nozzle performance and efficiency.",
+          "module": "M104"
+        },
+        {
+          "_id": "L403",
+          "name": "Nozzle Optimization",
+          "description": "Optimizing nozzle design for specific applications.",
+          "module": "M104"
+        }
+      ]
+    },
+
+    {
       "_id": "M201",
       "name": "Fundamentals of Aerodynamics",
       "description": "Basic aerodynamic concepts and fluid dynamics principles.",
