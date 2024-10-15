@@ -38,43 +38,5 @@ export default function CourseStatus() {
           <button className="btn btn-lg btn-secondary w-100 mt-1 text-start">
             <FaBell className="me-2 fs-5" /> View Course Notifications </button>
       </div>
-     
-     
-     
-     
-     
-     
-     
-     
-     
-      // <div id="wd-course-status">
-      //   <h2>Course Status</h2>
-      //   <div>
-      //     <button>Unpublish</button>
-      //     <button>Publish</button>
-      //   </div>
-      //   <br />
-      //   <div>
-      //     <button>Import Existing Content</button>
-      //   </div>
-      //   <div>
-      //     <button>Import from Commons</button>
-      //   </div>
-      //   <div>
-      //     <button>Choose Home Page</button>
-      //   </div>
-      //   <div>
-      //     <button>View Course Stream</button>
-      //   </div>
-      //   <div>
-      //     <button>New Announcement</button>
-      //   </div>
-      //   <div>
-      //     <button>New Analytics</button>
-      //   </div>
-      //   <div>
-      //     <button>View Course Notifications</button>
-      //   </div>
-      // </div>
     );
   }

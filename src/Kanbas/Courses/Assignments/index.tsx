@@ -72,9 +72,8 @@ export default function Assignments() {
                       <h6><strong>{assignment.title}</strong></h6>
                     </Link>
                     <span className="text-danger">Multiple Modules</span> |
-                      <strong> Not available until </strong> {assignment.available} <br />
-                      <strong> Due </strong> {assignment.due}
-                      {assignment.point} pts
+                      <strong> Not available until </strong> {assignment.available} | <br />
+                      <strong> Due </strong> {assignment.due} | {assignment.point} pts
                   </div>
                 </div>
                 <div className="float-end">
