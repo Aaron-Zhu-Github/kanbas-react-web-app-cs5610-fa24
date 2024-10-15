@@ -10,7 +10,7 @@ export default function Labs() {
         <h3>Name: Junren Zhu</h3>
         <h3>Section: 02</h3>
       </div>
-      <h1>Landing Page: </h1> <h5>Please click the 'Labs' tab to return to the landing page.</h5>
+      <h1>Landing Page: </h1> <h5>please click the 'Labs' tab to return to the landing page.</h5>
       <TOC />
       <Routes>
         <Route path="/" element={<Navigate to="LandingPage" />} />
