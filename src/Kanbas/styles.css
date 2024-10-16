@@ -15,7 +15,7 @@ body * {  font-family: Arial, Helvetica, sans-serif;  }
 
 .btn-secondary {
     --bs-btn-color: #000 !important;
-    --bs-btn-bg: #c7cdd1 !important;
+    --bs-btn-bg: #d4d7da !important;
     --bs-btn-border-color: #c7cdd1 !important;
     --bs-btn-hover-color: #fff !important;
 }

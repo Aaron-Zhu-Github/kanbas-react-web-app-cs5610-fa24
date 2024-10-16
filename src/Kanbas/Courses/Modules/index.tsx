@@ -1,9 +1,7 @@
 import { BsGripVertical } from "react-icons/bs"; 
 import ModulesControls from "./ModulesControls";
-import ModuleControlButtons from "./ModuleControlButton";
+import ModuleControlButtons from "./ModuleControlButtons";
 import LessonControlButtons from "./LessonControlButtons";
-import GreenCheckmark from "./GreenCheckmark";
-import { FaPlus } from "react-icons/fa6";
 
 import { useParams } from "react-router";
 import * as db from "../../Database";
@@ -25,8 +23,6 @@ export default function Modules() {
                             {module.name} 
                         </div>
                         <div className="d-flex align-items-center">
-                            <GreenCheckmark />
-                            <FaPlus className="ms-1" />
                             <ModuleControlButtons />
                         </div>
                     </div> 
