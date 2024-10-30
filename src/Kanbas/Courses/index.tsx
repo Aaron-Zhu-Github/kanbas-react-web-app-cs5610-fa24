@@ -1,4 +1,4 @@
-import { courses } from "../Database";
+// import { courses } from "../Database";
 import { Routes, Route, Navigate, useParams, useLocation } from "react-router-dom";
 import { FaAlignJustify } from "react-icons/fa";
 
@@ -9,7 +9,7 @@ import Assignments from "./Assignments";
 import AssignmentEditor from "./Assignments/AssignmentEditor";
 import PeopleTable from "./People/PeopleTable";
 
-export default function Courses() {
+export default function Courses({ courses }: { courses: any[]; }) {
   const { cid } = useParams();
   const course = courses.find((course) => course._id === cid);
   const { pathname } = useLocation();
