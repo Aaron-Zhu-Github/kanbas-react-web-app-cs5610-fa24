@@ -10,7 +10,7 @@ import Account from './Account'
 import './styles.css'
 
 import store from './store'
-import { Provider, useSelector } from 'react-redux'
+import { Provider } from 'react-redux'
 import ProtectedRoute from './Account/ProtectedRoute'
 
 export default function Kanbas() {

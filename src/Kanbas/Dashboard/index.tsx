@@ -253,7 +253,7 @@ export default function Dashboard() {
                               }}
                               className='btn btn-success me-2 float-end'
                             >
-                              enroll
+                              Enroll
                             </button>
                           )}
                       </>
