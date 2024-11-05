@@ -1,28 +1,29 @@
 import { createSlice } from "@reduxjs/toolkit";
-import enrollmentsData from "../Database/enrollments.json"; 
+import { enrollments } from '../Database'
+
+const initialState = { enrollments }
 
 const enrollmentsSlice = createSlice({
-  name: "enrollments",
-  initialState: enrollmentsData,
+  name: 'enrollments',
+  initialState: initialState,
   reducers: {
     enrollCourse: (state, action) => {
       const newEnrollment = {
-        _id: String(Date.now()), 
+        _id: String(Date.now()),
         user: action.payload.userId,
-        course: action.payload.courseId,
-      };
-      state.push(newEnrollment);
+        course: action.payload.courseId
+      }
+      state.enrollments = [...state.enrollments, newEnrollment]
     },
     unenrollCourse: (state, action) => {
-      const index = state.findIndex(
+      state.enrollments = state.enrollments.filter(
         (enrollment) =>
-          enrollment.user === action.payload.userId &&
-          enrollment.course === action.payload.courseId
-      );
-      if (index !== -1) state.splice(index, 1);
-    },
-  },
-});
+          enrollment.user !== action.payload.userId ||
+          enrollment.course !== action.payload.courseId
+      )
+    }
+  }
+})
 
 export const { enrollCourse, unenrollCourse } = enrollmentsSlice.actions;
 export default enrollmentsSlice.reducer;

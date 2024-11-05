@@ -11,7 +11,7 @@ export default function Labs() {
   return (
     <Provider store={store}>
     <div className="container-fluid">
-      <div>
+    <div>
         <h3>Name: Junren Zhu</h3>
         <h3>Section: 02</h3>
       </div>

@@ -267,11 +267,12 @@ export default function Lab1() {
                 Please
                 <a id="wd-lipsum" href="https://www.lipsum.com">click here</a>
                 to get dummy text<br />
+                
                 Please
-                <a id="wd-github" href="https://github.com/Aaron-Zhu-Github?tab=repositories">click here</a>
-                to my GitHub code repository<br />
-
+                <a id="wd-lipsum" href="https://github.com/Aaron-Zhu-Github/kanbas-react-web-app-cs5610-fa24/tree/a1">click here</a>
+                to get my GitHub<br />
                 {/* copy rest of form elements here  */}
+                
             </form>
         </div>
       </div>
