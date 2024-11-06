@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { addAssignment, updateAssignment } from './reducer'
@@ -25,6 +25,12 @@ export default function AssignmentEditor() {
           point: ''
         }
   )
+
+  const { currentUser } = useSelector(
+    (state: any) => state.accountReducer
+  )
+
+  const isFaculty = currentUser?.role === 'FACULTY'
 
   const dispatch = useDispatch()
 
@@ -58,7 +64,7 @@ export default function AssignmentEditor() {
         id='wd-name'
         className='form-control mb-4'
         value={assignment.title}
-        // onChange={handleChange}
+        disabled={!isFaculty}
         onChange={(e) =>
           setAssignment({ ...assignment, title: e.target.value })
         }
@@ -75,6 +81,7 @@ export default function AssignmentEditor() {
         name='description'
         className='form-control mb-3'
         rows={6}
+        disabled={!isFaculty}
         value={assignment.description}
         // onChange={handleChange}
         onChange={(e) =>
@@ -96,6 +103,7 @@ export default function AssignmentEditor() {
           id='wd-points'
           name='point'
           type='number'
+          disabled={!isFaculty}
           className='form-control w-auto'
           value={assignment.point}
           // onChange={handleChange}
@@ -115,6 +123,7 @@ export default function AssignmentEditor() {
         <select
           id='wd-assignment-group'
           className='form-select w-auto'
+          disabled={!isFaculty}
         >
           <option
             selected
@@ -138,6 +147,7 @@ export default function AssignmentEditor() {
         <select
           id='wd-display-grade-as'
           className='form-select w-auto'
+          disabled={!isFaculty}
         >
           <option
             selected
@@ -161,6 +171,7 @@ export default function AssignmentEditor() {
           <select
             id='wd-submission-type'
             className='form-select mb-3'
+            disabled={!isFaculty}
           >
             <option
               selected
@@ -181,6 +192,7 @@ export default function AssignmentEditor() {
               type='checkbox'
               id='wd-text-entry'
               className='me-1'
+              disabled={!isFaculty}
             />
             <label htmlFor='wd-text-entry'>Text Entry</label>
             <br />
@@ -196,6 +208,7 @@ export default function AssignmentEditor() {
               type='checkbox'
               id='wd-media-recordings'
               className='me-1'
+              disabled={!isFaculty}
             />
             <label htmlFor='wd-media-recordings'>
               Media Recordings
@@ -205,6 +218,7 @@ export default function AssignmentEditor() {
               type='checkbox'
               id='wd-student-annotation'
               className='me-1'
+              disabled={!isFaculty}
             />
             <label htmlFor='wd-student-annotation'>
               Student Annotation
@@ -214,6 +228,7 @@ export default function AssignmentEditor() {
               type='checkbox'
               id='wd-file-uploads'
               className='me-1'
+              disabled={!isFaculty}
             />
             <label htmlFor='wd-file-uploads'>File Uploads</label>
           </div>
@@ -236,6 +251,7 @@ export default function AssignmentEditor() {
             id='wd-assign-to'
             className='form-control mb-3'
             value=''
+            disabled={!isFaculty}
           />
 
           <div className='col'>
@@ -251,6 +267,7 @@ export default function AssignmentEditor() {
                 name='due'
                 type='datetime-local'
                 className='form-control'
+                disabled={!isFaculty}
                 value={assignment.due}
                 // onChange={handleChange}
                 onChange={(e) =>
@@ -278,6 +295,7 @@ export default function AssignmentEditor() {
                   type='datetime-local'
                   className='form-control'
                   value={assignment.available}
+                  disabled={!isFaculty}
                   // onChange={handleChange}
                   onChange={(e) =>
                     setAssignment({
@@ -302,6 +320,7 @@ export default function AssignmentEditor() {
                   type='datetime-local'
                   className='form-control'
                   value={assignment.until}
+                  disabled={!isFaculty}
                   // onChange={handleChange}
                   onChange={(e) =>
                     setAssignment({
@@ -327,22 +346,23 @@ export default function AssignmentEditor() {
           onChange={handleChange}
         />
       </div> */}
-
-      <div className='d-flex justify-content-end mt-4'>
-        <Link
-          to={`/Kanbas/Courses/${cid}/Assignments`}
-          className='btn btn-secondary me-2'
-        >
-          Cancel
-        </Link>
-        <button
-          className='btn btn-danger float-end'
-          id='wd-add-new-assignment-click'
-          onClick={save}
-        >
-          Save
-        </button>
-      </div>
+      {isFaculty && (
+        <div className='d-flex justify-content-end mt-4'>
+          <Link
+            to={`/Kanbas/Courses/${cid}/Assignments`}
+            className='btn btn-secondary me-2'
+          >
+            Cancel
+          </Link>
+          <button
+            className='btn btn-danger float-end'
+            id='wd-add-new-assignment-click'
+            onClick={save}
+          >
+            Save
+          </button>
+        </div>
+      )}
     </div>
   )
 }

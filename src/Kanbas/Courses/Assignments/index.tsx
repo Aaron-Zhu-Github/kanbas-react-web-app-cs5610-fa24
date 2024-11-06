@@ -13,6 +13,7 @@ import { Link } from 'react-router-dom'
 import GreenCheckmark from './GreenCheckmark'
 import { useSelector, useDispatch } from 'react-redux'
 import { deleteAssignment } from './reducer'
+import HomeworkControlButtons from './HomeworkControlButtons'
 
 export default function Assignments() {
   const { cid } = useParams()
@@ -154,20 +155,13 @@ export default function Assignments() {
                   <BsGripVertical className='me-2 fs-3' />
                   <PiNotebookBold className='me-2 fs-3 text-success' />
                   <div>
-                    {
-                      isFaculty ? (<Link
-                        to={`/Kanbas/Courses/${cid}/Assignments/${assignment._id}`}
-                      >
-                        <h6>
-                          <strong>{assignment.title}</strong>
-                        </h6>
-                      </Link>) :
-                        (<h6>
-                          <strong>{assignment.title}</strong>
-                        </h6>)
-
-                    }
-                    
+                    <Link
+                      to={`/Kanbas/Courses/${cid}/Assignments/${assignment._id}`}
+                    >
+                      <h6>
+                        <strong>{assignment.title}</strong>
+                      </h6>
+                    </Link>
                     <span className='text-danger'>
                       Multiple Modules
                     </span>{' '}

@@ -10,13 +10,11 @@ import Account from './Account'
 import './styles.css'
 
 import store from './store'
-import { Provider } from 'react-redux'
+import { Provider, useSelector } from 'react-redux'
 import ProtectedRoute from './Account/ProtectedRoute'
 
 export default function Kanbas() {
-  // const { courses } = useSelector(
-  //   (state: any) => state.coursesReducer
-  // )
+
   return (
     <Provider store={store}>
       <div id='wd-kanbas'>
@@ -31,20 +29,11 @@ export default function Kanbas() {
               path='/Account/*'
               element={<Account />}
             />
-            {/* <Route path="/Dashboard" element={<ProtectedRoute>
-                    <Dashboard
-                      courses={courses}
-                      course={course}
-                      setCourse={setCourse}
-                      addNewCourse={addNewCourse}
-                      deleteCourse={deleteCourse}
-                      updateCourse={updateCourse}/> </ProtectedRoute>
-                    } /> */}
             <Route
               path='/Dashboard'
               element={
                 <ProtectedRoute>
-                  <Dashboard />{' '}
+                  <Dashboard />
                 </ProtectedRoute>
               }
             />
@@ -52,7 +41,7 @@ export default function Kanbas() {
               path='/Courses/:cid/*'
               element={
                 <ProtectedRoute>
-                  <Courses courses={[]} />
+                  <Courses />
                 </ProtectedRoute>
               }
             />
