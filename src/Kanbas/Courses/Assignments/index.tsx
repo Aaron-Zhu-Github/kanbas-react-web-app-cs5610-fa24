@@ -13,7 +13,7 @@ import { Link } from 'react-router-dom'
 import GreenCheckmark from './GreenCheckmark'
 import { useSelector, useDispatch } from 'react-redux'
 import { deleteAssignment } from './reducer'
-import HomeworkControlButtons from './HomeworkControlButtons'
+// import HomeworkControlButtons from './HomeworkControlButtons'
 
 export default function Assignments() {
   const { cid } = useParams()
