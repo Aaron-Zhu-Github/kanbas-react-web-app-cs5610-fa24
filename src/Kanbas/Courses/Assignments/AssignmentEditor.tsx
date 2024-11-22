@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import {
@@ -10,22 +10,25 @@ import * as coursesClient from '../client'
 
 export default function AssignmentEditor() {
   const { cid, aid } = useParams()
+  const dispatch = useDispatch();
   const navigator = useNavigate()
   const isNewAssignment = aid === 'new'
 
   const { assignments } = useSelector(
     (state: any) => state.assignmentsReducer
   )
-  const getAssignments = async () => {
+  const getAssignments = useCallback(async () => {
     const assignments = await coursesClient.fetchAssignments(
       cid as string
     )
     console.log(assignments)
     dispatch(setAssignments(assignments))
-  }
+  }, [cid, dispatch]);
+
   useEffect(() => {
     getAssignments()
-  }, [aid, cid, getAssignments])
+  }, [getAssignments])
+
   useEffect(() => {
     setAssignment(
       !isNewAssignment
@@ -42,7 +45,8 @@ export default function AssignmentEditor() {
             point: ''
           }
     )
-  }, [aid, cid, isNewAssignment])
+  }, [aid, cid, assignments, isNewAssignment])
+  
   const [assignment, setAssignment] = useState<any>(
     !isNewAssignment
       ? assignments.find((assignment: any) => assignment._id === aid)
@@ -62,8 +66,6 @@ export default function AssignmentEditor() {
   )
 
   const isFaculty = currentUser?.role === 'FACULTY'
-
-  const dispatch = useDispatch()
 
   const save = async () => {
     console.log(assignment)
