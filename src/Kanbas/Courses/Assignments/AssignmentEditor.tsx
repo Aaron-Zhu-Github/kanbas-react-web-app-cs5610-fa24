@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
-import { addAssignment, updateAssignment } from './reducer'
-import * as coursesClient from "../client";
+import {
+  addAssignment,
+  setAssignments,
+  updateAssignment
+} from './reducer'
+import * as coursesClient from '../client'
 
 export default function AssignmentEditor() {
   const { cid, aid } = useParams()
@@ -12,7 +16,33 @@ export default function AssignmentEditor() {
   const { assignments } = useSelector(
     (state: any) => state.assignmentsReducer
   )
-
+  const getAssignments = async () => {
+    const assignments = await coursesClient.fetchAssignments(
+      cid as string
+    )
+    console.log(assignments)
+    dispatch(setAssignments(assignments))
+  }
+  useEffect(() => {
+    getAssignments()
+  }, [cid])
+  useEffect(() => {
+    setAssignment(
+      !isNewAssignment
+        ? assignments.find(
+            (assignment: any) => assignment._id === aid
+          )
+        : {
+            title: '',
+            course: cid,
+            description: '',
+            available: '',
+            due: '',
+            until: '',
+            point: ''
+          }
+    )
+  }, [assignments])
   const [assignment, setAssignment] = useState<any>(
     !isNewAssignment
       ? assignments.find((assignment: any) => assignment._id === aid)
@@ -35,7 +65,14 @@ export default function AssignmentEditor() {
 
   const dispatch = useDispatch()
 
-  const save = () => {
+  const save = async () => {
+    console.log(assignment)
+
+    if (isNewAssignment) {
+      await coursesClient.createAssignment(cid as string, assignment)
+    } else {
+      await coursesClient.updateAssignment(assignment)
+    }
     const action = isNewAssignment ? addAssignment : updateAssignment
     dispatch(action(assignment))
     navigator(`/Kanbas/Courses/${cid}/Assignments`)

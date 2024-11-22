@@ -2,44 +2,60 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
-import { enrollCourse, unenrollCourse } from './reducer'
+import {
+  setEnrollment,
+  enrollCourse,
+  unenrollCourse
+} from './reducer'
 import {
   addCourse,
   deleteCourse,
   updateCourse
 } from '../store/coursesReducer'
-import * as userClient from "../Account/client";
-import * as courseClient from "../Courses/client";
+import * as userClient from '../Account/client'
+import * as courseClient from '../Courses/client'
+import * as enrollmentClient from './client'
 // import * as db from "../Database";
 
 export default function Dashboard() {
-  const [cour, setCour] = useState<any[]>([]);
-  const { currentUser } = useSelector((state: any) => state.accountReducer);
+  const { currentUser } = useSelector(
+    (state: any) => state.accountReducer
+  )
   const { courses } = useSelector(
     (state: any) => state.coursesReducer
   )
+
   const { enrollments } = useSelector(
     (state: any) => state.enrollmentsReducer
   )
 
   const dispatch = useDispatch()
 
+  const getUserEnrollments = async () => {
+    const enrollments = await enrollmentClient.getUserEnrollment(
+      currentUser._id
+    )
+    dispatch(setEnrollment(enrollments))
+  }
+  useEffect(() => {
+    getUserEnrollments()
+  }, [])
+
   const isFaculty = currentUser?.role === 'FACULTY'
   const isStudent = currentUser?.role === 'STUDENT'
 
   const [showAllCourses, setShowAllCourses] = useState(isFaculty)
 
-  const userEnrollments = enrollments.filter(
-    (enrollment: any) => enrollment.user === currentUser._id
-  )
   const isEnrolledCourse = (course: any) =>
-    userEnrollments.some(
+    enrollments.some(
       (enrollment: any) => enrollment.course === course._id
     )
+
   const userCourses = courses.filter((course: any) =>
     isEnrolledCourse(course)
   )
-  const enrollCourseHandle = (courseId: any) => {
+  const enrollCourseHandle = async (courseId: any) => {
+    await enrollmentClient.addEnrollment(currentUser._id, courseId)
     dispatch(
       enrollCourse({
         userId: currentUser._id,
@@ -47,7 +63,8 @@ export default function Dashboard() {
       })
     )
   }
-  const unenrollCourseHandle = (courseId: any) => {
+  const unenrollCourseHandle = async (courseId: any) => {
+    await enrollmentClient.deleteEnrollment(currentUser._id, courseId)
     dispatch(
       unenrollCourse({
         userId: currentUser._id,
@@ -61,114 +78,66 @@ export default function Dashboard() {
     updateId: null
   })
 
-  // const addCourseHandle = () => {
-  //   const _id = new Date().getTime().toString()
-  //   dispatch(
-  //     addCourse({
-  //       _id,
-  //       name: course.name,
-  //       description: course.description
-  //     })
-  //   )
-  //   dispatch(
-  //     enrollCourse({
-  //       userId: currentUser._id,
-  //       courseId: _id
-  //     })
-  //   )
-  //   setCourse({
-  //     updateId: null,
-  //     name: '',
-  //     description: ''
-  //   })
-  // }
-  // const updateCourseHandle = () => {
-  //   dispatch(
-  //     updateCourse({
-  //       _id: course.updateId,
-  //       name: course.name,
-  //       description: course.description
-  //     })
-  //   )
-  //   setCourse({
-  //     updateId: null,
-  //     name: '',
-  //     description: ''
-  //   })
-  // }
-
   const addCourseHandle = async () => {
     try {
       const newCourse = await userClient.createCourse({
         name: course.name,
-        description: course.description,
-      });
+        description: course.description
+      })
       // 添加到 Redux 状态
-      dispatch(addCourse(newCourse));
+      dispatch(addCourse(newCourse))
       // 将用户注册到课程
-      dispatch(enrollCourse({
-        userId: currentUser._id,
-        courseId: newCourse._id,
-      }));
+      await enrollmentClient.addEnrollment(currentUser._id,newCourse._id)
+      dispatch(
+        enrollCourse({
+          userId: currentUser._id,
+          courseId: newCourse._id
+        })
+      )
       // 重置表单
       setCourse({
         updateId: null,
         name: '',
-        description: '',
-      });
+        description: ''
+      })
     } catch (error) {
-      console.error('Error adding course:', error);
+      console.error('Error adding course:', error)
     }
-  };
-  
+  }
+
   const updateCourseHandle = async () => {
     try {
       const updatedCourse = await courseClient.updateCourse({
         _id: course.updateId,
         name: course.name,
-        description: course.description,
-      });
+        description: course.description
+      })
       // 更新 Redux 状态
-      dispatch(updateCourse(updatedCourse));
+      dispatch(updateCourse(updatedCourse))
       // 重置表单
       setCourse({
         updateId: null,
         name: '',
-        description: '',
-      });
+        description: ''
+      })
     } catch (error) {
-      console.error('Error updating course:', error);
+      console.error('Error updating course:', error)
     }
-  };
+  }
 
   const deleteCourseHandle = async (courseId: string) => {
     try {
-      await courseClient.deleteCourse(courseId);
+      await courseClient.deleteCourse(courseId)
       // 从 Redux 状态中删除课程
-      dispatch(deleteCourse(courseId));
+      dispatch(deleteCourse(courseId))
     } catch (error) {
-      console.error('Error deleting course:', error);
+      console.error('Error deleting course:', error)
     }
-  };
-  
+  }
 
   const courseList =
     (isFaculty && userCourses) ||
     (showAllCourses ? courses : userCourses)
-
-    
-    const fetchCourses = async () => {
-    let courses = [];
-    try {
-      courses = await userClient.findMyCourses();
-      } catch (error) {
-      console.error(error);
-      }
-      setCour(courses);
-    };
-    useEffect(() => {
-      fetchCourses();
-    }, [currentUser]);
 
   return (
     <div
@@ -279,7 +248,7 @@ export default function Dashboard() {
                         <button
                           onClick={(event) => {
                             event.preventDefault()
-                            deleteCourseHandle(course._id);
+                            deleteCourseHandle(course._id)
                           }}
                           className='btn btn-danger float-end'
                           id='wd-delete-course-click'

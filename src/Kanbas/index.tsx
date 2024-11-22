@@ -2,7 +2,7 @@
 
 import Dashboard from './Dashboard'
 import KanbasNavigation from './Navigation'
-// import { useState } from "react";
+import { useState, useEffect } from 'react'
 import { Route, Routes, Navigate } from 'react-router'
 import Courses from './Courses'
 import Account from './Account'
@@ -11,18 +11,43 @@ import Account from './Account'
 import './styles.css'
 import * as userClient from './Account/client'
 
-
 // import store from './store'
 // import { Provider } from 'react-redux'
 import ProtectedRoute from './Account/ProtectedRoute'
 import Session from './Account/Session'
-// import * as db from "./Database";
+import { useDispatch, useSelector } from 'react-redux'
+import * as courseClient from './Courses/client'
+import { setCourses } from './store/coursesReducer'
+import * as enrollmentClient from './Dashboard/client'
+import { setEnrollment } from './Dashboard/reducer'
 
 export default function Kanbas() {
+  const { currentUser } = useSelector(
+    (state: any) => state.accountReducer
+  )
+  const dispatch = useDispatch()
+  const fetchCourses = async () => {
+    try {
+      const courses = await courseClient.fetchAllCourses()
+      dispatch(setCourses(courses))
+    } catch (error) {
+      console.error(error)
+    }
+  }
+  const getUserEnrollments = async () => {
+    const enrollments = await enrollmentClient.getUserEnrollment(
+      currentUser?._id
+    )
+    dispatch(setEnrollment(enrollments))
+  }
+  useEffect(() => {
+    fetchCourses()
+    getUserEnrollments()
+  }, [])
 
   return (
     // <Provider store={store}>
-      <Session>
+    <Session>
       <div id='wd-kanbas'>
         <KanbasNavigation />
         <div className='wd-main-content-offset p-3'>
@@ -62,7 +87,7 @@ export default function Kanbas() {
           </Routes>
         </div>
       </div>
-      </Session>
+    </Session>
     // </Provider>
   )
 }

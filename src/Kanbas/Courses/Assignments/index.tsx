@@ -7,12 +7,13 @@ import { FaPlus } from 'react-icons/fa6'
 import { SlMagnifier } from 'react-icons/sl'
 import { GoTriangleDown } from 'react-icons/go'
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { Link } from 'react-router-dom'
 import GreenCheckmark from './GreenCheckmark'
 import { useSelector, useDispatch } from 'react-redux'
-import { deleteAssignment } from './reducer'
+import { deleteAssignment, setAssignments } from './reducer'
+import * as client from '../client'
 // import HomeworkControlButtons from './HomeworkControlButtons'
 
 export default function Assignments() {
@@ -20,6 +21,13 @@ export default function Assignments() {
   const { assignments } = useSelector(
     (state: any) => state.assignmentsReducer
   )
+  const getAssignments = async () => {
+    const assignments = await client.fetchAssignments(cid as string)
+    dispatch(setAssignments(assignments))
+  }
+  useEffect(() => {
+    getAssignments()
+  }, [cid])
   const [deleteId, setDeleteId] = useState(null)
   const dispatch = useDispatch()
 
@@ -31,8 +39,10 @@ export default function Assignments() {
   const courseAssignments = useSelector((state: any) =>
     assignments.filter((a: any) => a.course === cid)
   )
-  const toDeleteAssignment = () => {
+  const toDeleteAssignment = async () => {
     if (deleteId) {
+      console.log(deleteId)
+      await client.deleteAssignment(deleteId)
       dispatch(deleteAssignment(deleteId))
       setDeleteId(null)
     }
