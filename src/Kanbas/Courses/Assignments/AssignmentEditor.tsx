@@ -1,7 +1,8 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { addAssignment, updateAssignment } from './reducer'
+import * as coursesClient from "../client";
 
 export default function AssignmentEditor() {
   const { cid, aid } = useParams()

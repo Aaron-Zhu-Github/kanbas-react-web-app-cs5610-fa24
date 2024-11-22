@@ -2,21 +2,27 @@
 
 import Dashboard from './Dashboard'
 import KanbasNavigation from './Navigation'
+// import { useState } from "react";
 import { Route, Routes, Navigate } from 'react-router'
 import Courses from './Courses'
 import Account from './Account'
 // import Calendar from "./Calendar";
 // import Inbox from "./Inbox";
 import './styles.css'
+import * as userClient from './Account/client'
 
-import store from './store'
-import { Provider } from 'react-redux'
+
+// import store from './store'
+// import { Provider } from 'react-redux'
 import ProtectedRoute from './Account/ProtectedRoute'
+import Session from './Account/Session'
+// import * as db from "./Database";
 
 export default function Kanbas() {
 
   return (
-    <Provider store={store}>
+    // <Provider store={store}>
+      <Session>
       <div id='wd-kanbas'>
         <KanbasNavigation />
         <div className='wd-main-content-offset p-3'>
@@ -56,6 +62,7 @@ export default function Kanbas() {
           </Routes>
         </div>
       </div>
-    </Provider>
+      </Session>
+    // </Provider>
   )
 }
