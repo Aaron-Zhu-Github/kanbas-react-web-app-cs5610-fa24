@@ -25,7 +25,7 @@ export default function AssignmentEditor() {
   }
   useEffect(() => {
     getAssignments()
-  }, [cid])
+  }, [aid, cid, isNewAssignment])
   useEffect(() => {
     setAssignment(
       !isNewAssignment

@@ -27,7 +27,7 @@ export default function Assignments() {
   }
   useEffect(() => {
     getAssignments()
-  }, [cid])
+  }, [cid, getAssignments])
   const [deleteId, setDeleteId] = useState(null)
   const dispatch = useDispatch()
 

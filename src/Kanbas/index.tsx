@@ -2,14 +2,14 @@
 
 import Dashboard from './Dashboard'
 import KanbasNavigation from './Navigation'
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 import { Route, Routes, Navigate } from 'react-router'
 import Courses from './Courses'
 import Account from './Account'
 // import Calendar from "./Calendar";
 // import Inbox from "./Inbox";
 import './styles.css'
-import * as userClient from './Account/client'
+// import * as userClient from './Account/client'
 
 // import store from './store'
 // import { Provider } from 'react-redux'
@@ -43,7 +43,7 @@ export default function Kanbas() {
   useEffect(() => {
     fetchCourses()
     getUserEnrollments()
-  }, [])
+  }, [fetchCourses, getUserEnrollments])
 
   return (
     // <Provider store={store}>

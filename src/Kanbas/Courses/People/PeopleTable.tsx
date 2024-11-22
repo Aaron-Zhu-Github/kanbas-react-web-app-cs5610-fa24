@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom'
 
 import * as userClient from '../../Account/client'
 import * as enrollmentClient from '../../Dashboard/client'
-import { enrollCourse, unenrollCourse } from '../../Dashboard/reducer'
+// import { enrollCourse, unenrollCourse } from '../../Dashboard/reducer'
 import { useDispatch, useSelector } from 'react-redux'
 
 import * as client from './client'
@@ -19,7 +19,7 @@ export default function PeopleTable() {
 
   const [users, setUsers] = useState([])
 
-  const dispatch = useDispatch()
+  // const dispatch = useDispatch()
 
   const getCourseUsers = async () => {
     const list = await userClient.findCourseUser(cid as string)
@@ -28,7 +28,7 @@ export default function PeopleTable() {
 
   useEffect(() => {
     getCourseUsers()
-  }, [cid])
+  }, [cid, getCourseUsers])
 
   const [operationId, setOperationId] = useState<string | undefined>()
 

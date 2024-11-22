@@ -39,7 +39,7 @@ export default function Dashboard() {
   }
   useEffect(() => {
     getUserEnrollments()
-  }, [])
+  }, [getUserEnrollments])
 
   const isFaculty = currentUser?.role === 'FACULTY'
   const isStudent = currentUser?.role === 'STUDENT'
