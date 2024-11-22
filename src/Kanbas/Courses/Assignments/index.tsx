@@ -7,7 +7,7 @@ import { FaPlus } from 'react-icons/fa6'
 import { SlMagnifier } from 'react-icons/sl'
 import { GoTriangleDown } from 'react-icons/go'
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import { useParams } from 'react-router-dom'
 import { Link } from 'react-router-dom'
 import GreenCheckmark from './GreenCheckmark'
@@ -18,18 +18,22 @@ import * as client from '../client'
 
 export default function Assignments() {
   const { cid } = useParams()
+  const dispatch = useDispatch()
+
   const { assignments } = useSelector(
     (state: any) => state.assignmentsReducer
   )
-  const getAssignments = async () => {
+  const getAssignments = useCallback(async () => {
     const assignments = await client.fetchAssignments(cid as string)
     dispatch(setAssignments(assignments))
-  }
+  }, [cid, dispatch])
+
   useEffect(() => {
     getAssignments()
-  }, [cid, getAssignments])
+  }, [getAssignments])
+
   const [deleteId, setDeleteId] = useState(null)
-  const dispatch = useDispatch()
+  
 
   const { currentUser } = useSelector(
     (state: any) => state.accountReducer

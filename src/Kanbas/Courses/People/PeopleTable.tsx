@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import { FaEdit, FaPlus, FaTrash, FaUserCircle } from 'react-icons/fa'
 import { useParams } from 'react-router-dom'
 
 import * as userClient from '../../Account/client'
 import * as enrollmentClient from '../../Dashboard/client'
 // import { enrollCourse, unenrollCourse } from '../../Dashboard/reducer'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 
 import * as client from './client'
 
@@ -21,10 +21,10 @@ export default function PeopleTable() {
 
   // const dispatch = useDispatch()
 
-  const getCourseUsers = async () => {
+  const getCourseUsers = useCallback(async () => {
     const list = await userClient.findCourseUser(cid as string)
     setUsers(list)
-  }
+  }, [cid])
 
   useEffect(() => {
     getCourseUsers()

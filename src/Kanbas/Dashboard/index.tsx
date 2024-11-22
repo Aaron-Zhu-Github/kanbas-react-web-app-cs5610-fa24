@@ -1,5 +1,5 @@
 // All images in this assignment are from internet
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import {
@@ -31,12 +31,13 @@ export default function Dashboard() {
 
   const dispatch = useDispatch()
 
-  const getUserEnrollments = async () => {
+  const getUserEnrollments = useCallback(async () => {
     const enrollments = await enrollmentClient.getUserEnrollment(
       currentUser._id
     )
     dispatch(setEnrollment(enrollments))
-  }
+  }, [currentUser._id, dispatch])
+
   useEffect(() => {
     getUserEnrollments()
   }, [getUserEnrollments])

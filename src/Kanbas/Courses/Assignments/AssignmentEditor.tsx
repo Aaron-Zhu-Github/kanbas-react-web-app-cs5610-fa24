@@ -25,7 +25,7 @@ export default function AssignmentEditor() {
   }
   useEffect(() => {
     getAssignments()
-  }, [aid, cid, isNewAssignment])
+  }, [aid, cid, getAssignments])
   useEffect(() => {
     setAssignment(
       !isNewAssignment
@@ -42,7 +42,7 @@ export default function AssignmentEditor() {
             point: ''
           }
     )
-  }, [assignments])
+  }, [aid, cid, isNewAssignment])
   const [assignment, setAssignment] = useState<any>(
     !isNewAssignment
       ? assignments.find((assignment: any) => assignment._id === aid)

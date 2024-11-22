@@ -2,7 +2,7 @@
 
 import Dashboard from './Dashboard'
 import KanbasNavigation from './Navigation'
-import { useEffect } from 'react'
+import { useEffect, useCallback } from 'react'
 import { Route, Routes, Navigate } from 'react-router'
 import Courses from './Courses'
 import Account from './Account'
@@ -26,20 +26,22 @@ export default function Kanbas() {
     (state: any) => state.accountReducer
   )
   const dispatch = useDispatch()
-  const fetchCourses = async () => {
+  const fetchCourses = useCallback(async () => {
     try {
       const courses = await courseClient.fetchAllCourses()
       dispatch(setCourses(courses))
     } catch (error) {
       console.error(error)
     }
-  }
-  const getUserEnrollments = async () => {
+  }, [dispatch])
+
+  const getUserEnrollments = useCallback(async () => {
     const enrollments = await enrollmentClient.getUserEnrollment(
       currentUser?._id
     )
     dispatch(setEnrollment(enrollments))
-  }
+  }, [dispatch, currentUser?._id])
+
   useEffect(() => {
     fetchCourses()
     getUserEnrollments()
