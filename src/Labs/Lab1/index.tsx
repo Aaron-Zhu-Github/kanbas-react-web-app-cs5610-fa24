@@ -62,7 +62,7 @@ export default function Lab1() {
                 <li>Crack eggs into a bowl with salt and pepper, and whisk.</li>
                 <li>Heat butter in a pan.</li>
                 <li>Fry ham or other meat for two minutes.</li>
-                <li>Fry vegetables for one minute.</li>
+                <li>Fry vegetables for a minute.</li>
                 <li>Pour the egg mixture into the pan and cook gently.</li>
                 <li>Fold the omelet in half and cook for another minute.</li>
                 <li>Serve hot with your favorite toppings and sauces and enjoy!</li>
