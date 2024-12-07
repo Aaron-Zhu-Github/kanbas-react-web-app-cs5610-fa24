@@ -1,32 +1,38 @@
-import axios from 'axios'
+import axios from "axios";
+const axiosWithCredentials = axios.create({ withCredentials: true });
 
-const REMOTE_SERVER = process.env.REACT_APP_REMOTE_SERVER
-const COURSES_API = `${REMOTE_SERVER}/api/courses`
-const ASSIGNMENTS_API = `${REMOTE_SERVER}/api/assignments`
+const REMOTE_SERVER = process.env.REACT_APP_REMOTE_SERVER;
+const COURSES_API = `${REMOTE_SERVER}/api/courses`;
+const ASSIGNMENTS_API = `${REMOTE_SERVER}/api/assignments`;
 
 export const fetchAllCourses = async () => {
-  const { data } = await axios.get(COURSES_API)
+  const { data } = await axiosWithCredentials.get(COURSES_API)
   return data
 }
 
 export const deleteCourse = async (id: string) => {
-  const { data } = await axios.delete(`${COURSES_API}/${id}`)
+  const { data } = await axiosWithCredentials.delete(`${COURSES_API}/${id}`)
   return data
 }
 
 export const updateCourse = async (course: any) => {
-  const { data } = await axios.put(
+  const { data } = await axiosWithCredentials.put(
     `${COURSES_API}/${course._id}`,
     course
   )
   return data
 }
 
+export const findUsersForCourse = async (courseId: string | undefined) => {
+  const response = await axios.get(`${COURSES_API}/${courseId}/users`);
+  return response.data;
+};
+
 export const createModuleForCourse = async (
   courseId: string,
   module: any
 ) => {
-  const response = await axios.post(
+  const response = await axiosWithCredentials.post(
     `${COURSES_API}/${courseId}/modules`,
     module
   )
@@ -34,15 +40,17 @@ export const createModuleForCourse = async (
 }
 
 export const findModulesForCourse = async (courseId: string) => {
-  const response = await axios.get(
+  const response = await axiosWithCredentials.get(
     `${COURSES_API}/${courseId}/modules`
   )
   return response.data
 }
 
+
+
 // Assignment
 export const fetchAssignments = async (courseId: string) => {
-  const response = await axios.get(
+  const response = await axiosWithCredentials.get(
     `${COURSES_API}/${courseId}/assignments`
   )
   return response.data
@@ -52,7 +60,7 @@ export const createAssignment = async (
   courseId: string,
   assignment: any
 ) => {
-  const response = await axios.post(
+  const response = await axiosWithCredentials.post(
     `${COURSES_API}/${courseId}/assignments`,
     assignment
   )
@@ -61,7 +69,7 @@ export const createAssignment = async (
 
 export const updateAssignment = async (assignment: any) => {
   console.log(assignment)
-  const { data } = await axios.put(
+  const { data } = await axiosWithCredentials.put(
     `${ASSIGNMENTS_API}/${assignment._id}`,
     assignment
   )
@@ -69,7 +77,7 @@ export const updateAssignment = async (assignment: any) => {
 }
 
 export const deleteAssignment = async (assignmentId: any) => {
-  const { data } = await axios.delete(
+  const { data } = await axiosWithCredentials.delete(
     `${ASSIGNMENTS_API}/${assignmentId}`
   )
   return data

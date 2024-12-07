@@ -2,38 +2,58 @@
 
 import Dashboard from './Dashboard'
 import KanbasNavigation from './Navigation'
-import { useEffect, useCallback } from 'react'
+import {useEffect, useCallback, useState} from 'react'
 import { Route, Routes, Navigate } from 'react-router'
 import Courses from './Courses'
 import Account from './Account'
-// import Calendar from "./Calendar";
-// import Inbox from "./Inbox";
 import './styles.css'
-// import * as userClient from './Account/client'
-
-// import store from './store'
-// import { Provider } from 'react-redux'
 import ProtectedRoute from './Account/ProtectedRoute'
 import Session from './Account/Session'
 import { useDispatch, useSelector } from 'react-redux'
 import * as courseClient from './Courses/client'
-import { setCourses } from './store/coursesReducer'
+import { addCourse, deleteCourse, setCourses as setStoreCourses, updateCourse } from './store/coursesReducer'
 import * as enrollmentClient from './Dashboard/client'
-import { setEnrollment } from './Dashboard/reducer'
-
+import {enrollCourse, setEnrollment} from './Dashboard/reducer'
+import * as userClient from "./Account/client";
 export default function Kanbas() {
   const { currentUser } = useSelector(
-    (state: any) => state.accountReducer
+      (state: any) => state.accountReducer
   )
+  const [courses, setCourses] = useState<any[]>([]);
+  type CourseType = {
+    name: string;
+    description: string;
+    number: string;
+    credits: string;
+    updateId: number | null;
+  };
+  const [course, setCourse] = useState<CourseType>({
+    name: '',
+    description: '',
+    number: '',
+    credits: '',
+    updateId: null
+  })
   const dispatch = useDispatch()
-  const fetchCourses = useCallback(async () => {
+  const fetchCourses = async () => {
     try {
-      const courses = await courseClient.fetchAllCourses()
-      dispatch(setCourses(courses))
+      const allCourses = await courseClient.fetchAllCourses();
+      const enrolledCourses = await userClient.findCoursesForUser(
+          currentUser._id
+      );
+      const courses = allCourses.map((course: any) => {
+        if (enrolledCourses.find((c: any) => c._id === course._id)) {
+          return { ...course, enrolled: true };
+        } else {
+          return course;
+        }
+      });
+      setCourses(courses);
+      dispatch(await setStoreCourses(courses))
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
-  }, [dispatch])
+  };
 
   const getUserEnrollments = useCallback(async () => {
     const enrollments = await enrollmentClient.getUserEnrollment(
@@ -41,11 +61,130 @@ export default function Kanbas() {
     )
     dispatch(setEnrollment(enrollments))
   }, [dispatch, currentUser?._id])
+  const [enrolling, setEnrolling] = useState<boolean>(false);
+  const findCoursesForUser = async () => {
+    try {
+      const courses = await userClient.findCoursesForUser(currentUser._id);
+      setCourses(courses);
+      dispatch(await setStoreCourses(courses))
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const addNewCourseHandler = async () => {
+
+    try {
+      if (!course.name || !course.number || !course.credits) {
+        alert('Name, number, and credits are required fields.');
+        return; // 终止函数执行
+      }
+      const newCourse = await userClient.createCourse({
+        name: course.name,
+        credits: course.credits,
+        number: course.number,
+        description: course.description
+      })
+      dispatch(addCourse(newCourse))
+      await enrollmentClient.addEnrollment(currentUser._id,newCourse._id)
+      dispatch(
+          enrollCourse({
+            userId: currentUser._id,
+            courseId: newCourse._id
+          })
+      )
+      setCourse({
+        updateId: null,
+        name: '',
+        number: '',
+        credits: '',
+        description: ''
+      })
+    } catch (error) {
+      console.error('Error adding course:', error)
+    }
+    if (enrolling) {
+      fetchCourses();
+    } else {
+      findCoursesForUser();
+    }
+  }
+
+  const updateCourseHandler = async () => {
+    try {
+      if (!course.name || !course.number || !course.credits) {
+        alert('Name, number, and credits are required fields.');
+        return; // 终止函数执行
+      }
+      const updatedCourse = await courseClient.updateCourse({
+        _id: course.updateId,
+        name: course.name,
+        credits: course.credits,
+        number: course.number,
+        description: course.description
+      })
+      dispatch(await updateCourse(updatedCourse))
+      setCourse({
+        updateId: null,
+        name: '',
+        number: '',
+        credits: '',
+        description: ''
+      })
+    } catch (error) {
+      console.error('Error updating course:', error)
+    }
+    if (enrolling) {
+      fetchCourses();
+    } else {
+      findCoursesForUser();
+    }
+  }
+
+  const deleteCourseHandler = async (courseId: string) => {
+    try {
+      await courseClient.deleteCourse(courseId)
+      // @ts-ignore
+      dispatch(deleteCourse(courseId))
+    } catch (error) {
+      console.error('Error deleting course:', error)
+    }
+    if (enrolling) {
+      fetchCourses();
+    } else {
+      findCoursesForUser();
+    }
+  }
+
+  const handleSetCourse = async (course: any) => {
+   setCourse(course)
+  }
+  const updateEnrollment = async (courseId: string, enrolled: boolean) => {
+    if (enrolled) {
+      await userClient.enrollIntoCourse(currentUser._id, courseId);
+    } else {
+      await userClient.unenrollFromCourse(currentUser._id, courseId);
+    }
+    setCourses(
+        courses.map((course) => {
+          if (course._id === courseId) {
+            return { ...course, enrolled: enrolled };
+          } else {
+            return course;
+          }
+        })
+    );
+
+  };
 
   useEffect(() => {
-    fetchCourses()
-    getUserEnrollments()
-  }, [fetchCourses, getUserEnrollments])
+    console.log(currentUser)
+    if (enrolling) {
+      fetchCourses();
+    } else {
+      findCoursesForUser();
+    }
+  }, [currentUser, enrolling])
 
   return (
     // <Provider store={store}>
@@ -66,7 +205,10 @@ export default function Kanbas() {
               path='/Dashboard'
               element={
                 <ProtectedRoute>
-                  <Dashboard />
+                  <Dashboard enrolling={enrolling} setEnrolling={setEnrolling} courses={courses} course={course}  setCourse={handleSetCourse}
+                             addNewCourse={addNewCourseHandler} deleteCourse={deleteCourseHandler} updateCourse={updateCourseHandler}
+                             updateEnrollment={updateEnrollment}
+                             />
                 </ProtectedRoute>
               }
             />
@@ -90,6 +232,5 @@ export default function Kanbas() {
         </div>
       </div>
     </Session>
-    // </Provider>
   )
 }

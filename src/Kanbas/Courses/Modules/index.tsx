@@ -32,12 +32,15 @@ export default function Modules() {
   const saveModule = async (module: any) => {
     await modulesClient.updateModule(module)
     dispatch(updateModule(module))
+    await fetchModules();
   }
 
   const removeModule = async (moduleId: string) => {
     await modulesClient.deleteModule(moduleId)
     dispatch(deleteModule(moduleId))
+    await fetchModules();
   }
+
 
   const createModuleForCourse = async () => {
     if (!cid) return
@@ -47,20 +50,23 @@ export default function Modules() {
       newModule
     )
     dispatch(addModule(module))
+    await fetchModules();
   }
 
   const fetchModules = async () => {
-    const modules = await coursesClient.findModulesForCourse(
-      cid as string
-    )
-    dispatch(setModules(modules))
+    let modules = await coursesClient.findModulesForCourse(cid as string);
+
+    if (modules === null || Object.keys(modules).length === 0) {
+      modules = [];
+    }
+
+    dispatch(setModules(modules));
   }
   useEffect(() => {
     fetchModules()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const isFaculty = currentUser?.role === 'FACULTY'
+  const isFaculty = currentUser?.role === 'FACULTY' || currentUser?.role === 'ADMIN'
 
   return (
     <div className='wd-modules'>
@@ -120,8 +126,10 @@ export default function Modules() {
                     deleteModule={(moduleId) =>
                       removeModule(moduleId)
                     }
-                    editModule={(moduleId) =>
+                    editModule={(moduleId) =>{
                       dispatch(editModule(moduleId))
+                    }
+
                     }
                   />
                 )}

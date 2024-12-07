@@ -39,10 +39,14 @@ export default function Assignments() {
     (state: any) => state.accountReducer
   )
 
-  const isFaculty = currentUser?.role === 'FACULTY'
-  const courseAssignments = useSelector((state: any) =>
-    assignments.filter((a: any) => a.course === cid)
-  )
+  const isFaculty = currentUser?.role === 'FACULTY' || currentUser?.role === "ADMIN"
+  const courseAssignments = useSelector((state: any) => {
+    if (Array.isArray(assignments)) {
+      return assignments.filter((a: any) => a.course === cid);
+    }
+    return [];
+  });
+
   const toDeleteAssignment = async () => {
     if (deleteId) {
       console.log(deleteId)

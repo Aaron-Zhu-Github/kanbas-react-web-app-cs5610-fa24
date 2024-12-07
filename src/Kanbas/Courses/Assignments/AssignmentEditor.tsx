@@ -9,11 +9,12 @@ import {
 import * as coursesClient from '../client'
 
 export default function AssignmentEditor() {
-  const { cid, aid } = useParams()
+  const { cid, aid,'*': wildcard } = useParams()
+
+  console.log('useParams:', useParams());
   const dispatch = useDispatch();
   const navigator = useNavigate()
-  const isNewAssignment = aid === 'new'
-
+  const isNewAssignment = ((wildcard === 'Assignments/new') || (aid === 'new'))
   const { assignments } = useSelector(
     (state: any) => state.assignmentsReducer
   )
@@ -65,7 +66,7 @@ export default function AssignmentEditor() {
     (state: any) => state.accountReducer
   )
 
-  const isFaculty = currentUser?.role === 'FACULTY'
+  const isFaculty = currentUser?.role === 'FACULTY' || currentUser?.role === 'ADMIN'
 
   const save = async () => {
     console.log(assignment)

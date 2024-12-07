@@ -5,6 +5,7 @@ export const ENROLLMENT_API = `${REMOTE_SERVER}/api/enrollments`
 
 export const getUserEnrollment = async (userId: String) => {
   const { data } = await axios.get(`${ENROLLMENT_API}/${userId}`)
+  console.log(data)
   return data
 }
 
