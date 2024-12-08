@@ -13,8 +13,7 @@ export default function Labs() {
     <Provider store={store}>
     <div className="container-fluid">
       <div>
-        <h3>Name: Junren Zhu</h3>
-        <h3>Section: 02</h3>
+
       </div>
       <h1>Landing Page: </h1> <h5>please click the 'Labs' tab to return to the landing page.</h5>
       <TOC />

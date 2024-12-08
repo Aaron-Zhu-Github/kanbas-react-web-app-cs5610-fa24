@@ -56,6 +56,7 @@ export default function Modules() {
   const fetchModules = async () => {
     let modules = await coursesClient.findModulesForCourse(cid as string);
 
+    // 检查 modules 是否是 null 或者空对象，如果是，则赋值为空数组
     if (modules === null || Object.keys(modules).length === 0) {
       modules = [];
     }
@@ -64,6 +65,7 @@ export default function Modules() {
   }
   useEffect(() => {
     fetchModules()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const isFaculty = currentUser?.role === 'FACULTY' || currentUser?.role === 'ADMIN'

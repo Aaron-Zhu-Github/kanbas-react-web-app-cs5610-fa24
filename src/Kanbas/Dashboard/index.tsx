@@ -30,7 +30,7 @@ export default function Dashboard({
                                   }: {
   enrolling: boolean;
   setEnrolling: (enrolling: boolean) => void;
-  courses: any[]; 
+  courses: any[]; // 或者使用更具体的类型，例如 CourseType[]
   course: {
     name: string;
     description: string;
@@ -39,9 +39,9 @@ export default function Dashboard({
     updateId: number | null;
   };
   setCourse: (course: any) => void;
-  addNewCourse: () => void; 
-  deleteCourse: (courseId: string) => void; 
-  updateCourse: () => void; 
+  addNewCourse: () => void; // 修正类型定义
+  deleteCourse: (courseId: string) => void; // 确保 courseId 类型与实际使用一致
+  updateCourse: () => void; // 修正类型定义
     updateEnrollment:(courseId: string, enrolled: boolean) => void;
 }){
 
@@ -68,14 +68,15 @@ export default function Dashboard({
     getUserEnrollments()
   }, [getUserEnrollments])
 
-  const isFaculty = true
+  const isFaculty = currentUser?.role === "FACULTY" || currentUser?.role === "ADMIN";
   const isStudent = currentUser?.role === 'STUDENT'
 
   const [showAllCourses, setShowAllCourses] = useState(isFaculty)
 
     const isEnrolledCourse = (course: any) => {
+        // 检查 course 是否存在以及 course._id 是否不是 null 或 undefined
         if (!course || course._id == null) {
-            return false; 
+            return false; // 如果 course._id 是 null 或 undefined，则返回 false
         }
 
         return enrollments.some(
@@ -136,8 +137,8 @@ export default function Dashboard({
       <hr/>
 
       <h2 id='wd-dashboard-published'>
-      {showAllCourses ? 'Published Courses' : 'Enrolled Courses'}（
-        {courses.length}）
+
+        {courses.length}
       </h2>
       <hr/>
       {isFaculty && (

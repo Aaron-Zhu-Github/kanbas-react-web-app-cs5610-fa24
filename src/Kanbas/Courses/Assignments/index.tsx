@@ -41,9 +41,12 @@ export default function Assignments() {
 
   const isFaculty = currentUser?.role === 'FACULTY' || currentUser?.role === "ADMIN"
   const courseAssignments = useSelector((state: any) => {
+    // 检查assignments是否是数组
     if (Array.isArray(assignments)) {
+      // 如果是数组，执行过滤操作
       return assignments.filter((a: any) => a.course === cid);
     }
+    // 如果不是数组，返回一个空数组或者根据你的需求返回默认值
     return [];
   });
 
