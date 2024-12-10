@@ -1,238 +1,392 @@
-// Part of the code of this assignment come from Professor Jose Annunziato's lecture code
+// // Part of the code of this assignment come from Professor Jose Annunziato's lecture code
 
-import Dashboard from './Dashboard'
-import KanbasNavigation from './Navigation'
-import {useEffect, useState} from 'react'
-import { Route, Routes, Navigate } from 'react-router'
-import Courses from './Courses'
-import Account from './Account'
-import './styles.css'
-import ProtectedRoute from './Account/ProtectedRoute'
-import Session from './Account/Session'
-import { useDispatch, useSelector } from 'react-redux'
-import * as courseClient from './Courses/client'
-import { addCourse, deleteCourse, setCourses as setStoreCourses, updateCourse } from './store/coursesReducer'
-import * as enrollmentClient from './Dashboard/client'
-import {enrollCourse} from './Dashboard/reducer'
-import * as userClient from "./Account/client";
+// import Dashboard from './Dashboard'
+// import KanbasNavigation from './Navigation'
+// import {useEffect, useState} from 'react'
+// import { Route, Routes, Navigate } from 'react-router'
+// import Courses from './Courses'
+// import Account from './Account'
+// import './styles.css'
+// import ProtectedRoute from './Account/ProtectedRoute'
+// import Session from './Account/Session'
+// import { useDispatch, useSelector } from 'react-redux'
+// import * as courseClient from './Courses/client'
+// import { addCourse, deleteCourse, setCourses as setStoreCourses, updateCourse } from './store/coursesReducer'
+// import * as enrollmentClient from './Dashboard/client'
+// import {enrollCourse} from './Dashboard/reducer'
+// import * as userClient from "./Account/client";
+// export default function Kanbas() {
+//   const { currentUser } = useSelector(
+//       (state: any) => state.accountReducer
+//   )
+//   const [courses, setCourses] = useState<any[]>([]);
+//   type CourseType = {
+//     name: string;
+//     description: string;
+//     number: string;
+//     credits: string;
+//     updateId: number | null;
+//   };
+//   const [course, setCourse] = useState<CourseType>({
+//     name: '',
+//     description: '',
+//     number: '',
+//     credits: '',
+//     updateId: null
+//   })
+//   const dispatch = useDispatch()
+  
+//   const fetchCourses = async () => {
+//     try {
+//       const allCourses = await courseClient.fetchAllCourses();
+//       const enrolledCourses = await userClient.findCoursesForUser(
+//           currentUser._id
+//       );
+//       const courses = allCourses.map((course: any) => {
+//         if (enrolledCourses.find((c: any) => c._id === course._id)) {
+//           return { ...course, enrolled: true };
+//         } else {
+//           return course;
+//         }
+//       });
+//       setCourses(courses);
+//       dispatch(await setStoreCourses(courses))
+//     } catch (error) {
+//       console.error(error);
+//     }
+//   };
+
+//   // const getUserEnrollments = useCallback(async () => {
+//   //   const enrollments = await enrollmentClient.getUserEnrollment(
+//   //     currentUser?._id
+//   //   )
+//   //   dispatch(setEnrollment(enrollments))
+//   // }, [dispatch, currentUser?._id])
+
+//   const [enrolling, setEnrolling] = useState<boolean>(false);
+
+//   const findCoursesForUser = async () => {
+//     try {
+//       const courses = await userClient.findCoursesForUser(currentUser._id);
+//       setCourses(courses);
+//       dispatch(await setStoreCourses(courses))
+//     } catch (error) {
+//       console.error(error);
+//     }
+//   };
+
+//   const addNewCourseHandler = async () => {
+
+//     try {
+//       if (!course.name || !course.number || !course.credits) {
+//         alert('Name, number, and credits are required fields.');
+//         return; 
+//       }
+//       const newCourse = await userClient.createCourse({
+//         name: course.name,
+//         credits: course.credits,
+//         number: course.number,
+//         description: course.description
+//       })
+//       dispatch(addCourse(newCourse))
+//       await enrollmentClient.addEnrollment(currentUser._id,newCourse._id)
+//       dispatch(
+//           enrollCourse({
+//             userId: currentUser._id,
+//             courseId: newCourse._id
+//           })
+//       )
+//       setCourse({
+//         updateId: null,
+//         name: '',
+//         number: '',
+//         credits: '',
+//         description: ''
+//       })
+//     } catch (error) {
+//       console.error('Error adding course:', error)
+//     }
+//     if (enrolling) {
+//       fetchCourses();
+//     } else {
+//       findCoursesForUser();
+//     }
+//   }
+
+//   const updateCourseHandler = async () => {
+//     try {
+//       if (!course.name || !course.number || !course.credits) {
+//         alert('Name, number, and credits are required fields.');
+//         return; 
+//       }
+//       const updatedCourse = await courseClient.updateCourse({
+//         _id: course.updateId,
+//         name: course.name,
+//         credits: course.credits,
+//         number: course.number,
+//         description: course.description
+//       })
+//       dispatch(await updateCourse(updatedCourse))
+//       setCourse({
+//         updateId: null,
+//         name: '',
+//         number: '',
+//         credits: '',
+//         description: ''
+//       })
+//     } catch (error) {
+//       console.error('Error updating course:', error)
+//     }
+//     if (enrolling) {
+//       fetchCourses();
+//     } else {
+//       findCoursesForUser();
+//     }
+//   }
+
+//   const deleteCourseHandler = async (courseId: string) => {
+//     try {
+//       await courseClient.deleteCourse(courseId)
+//       // @ts-ignore
+//       dispatch(deleteCourse(courseId))
+//     } catch (error) {
+//       console.error('Error deleting course:', error)
+//     }
+//     if (enrolling) {
+//       fetchCourses();
+//     } else {
+//       findCoursesForUser();
+//     }
+//   }
+
+//   const handleSetCourse = async (course: any) => {
+//    setCourse(course)
+//   }
+//   const updateEnrollment = async (courseId: string, enrolled: boolean) => {
+//     if (enrolled) {
+//       await userClient.enrollIntoCourse(currentUser._id, courseId);
+//     } else {
+//       await userClient.unenrollFromCourse(currentUser._id, courseId);
+//     }
+//     setCourses(
+//         courses.map((course) => {
+//           if (course._id === courseId) {
+//             return { ...course, enrolled: enrolled };
+//           } else {
+//             return course;
+//           }
+//         })
+//     );
+
+//   };
+
+//   useEffect(() => {
+//     console.log(currentUser)
+//     if (enrolling) {
+//       fetchCourses();
+//     } else {
+//       findCoursesForUser();
+//     }
+//   }, [currentUser, enrolling])
+
+//   return (
+//     // <Provider store={store}>
+//     <Session>
+//       <div id='wd-kanbas'>
+//         <KanbasNavigation />
+//         <div className='wd-main-content-offset p-3'>
+//           <Routes>
+//             <Route
+//               path='/'
+//               element={<Navigate to='Account' />}
+//             />
+//             <Route
+//               path='/Account/*'
+//               element={<Account />}
+//             />
+//             <Route
+//               path='/Dashboard'
+//               element={
+//                 <ProtectedRoute>
+//                   <Dashboard enrolling={enrolling} setEnrolling={setEnrolling} courses={courses} course={course}  setCourse={handleSetCourse}
+//                              addNewCourse={addNewCourseHandler} deleteCourse={deleteCourseHandler} updateCourse={updateCourseHandler}
+//                              updateEnrollment={updateEnrollment}
+//                              />
+//                 </ProtectedRoute>
+//               }
+//             />
+//             <Route
+//               path='/Courses/:cid/*'
+//               element={
+//                 <ProtectedRoute>
+//                   <Courses />
+//                 </ProtectedRoute>
+//               }
+//             />
+//             <Route
+//               path='/Calendar'
+//               element={<h1>Calendar</h1>}
+//             />
+//             <Route
+//               path='/Inbox'
+//               element={<h1>Inbox</h1>}
+//             />
+//           </Routes>
+//         </div>
+//       </div>
+//     </Session>
+//   )
+// }
+
+
+import { useEffect, useState, useCallback } from 'react';
+import { Route, Routes, Navigate } from 'react-router';
+import { useDispatch, useSelector } from 'react-redux';
+import * as courseClient from './Courses/client';
+import * as userClient from './Account/client';
+import * as enrollmentClient from './Dashboard/client';
+import {
+  addCourse,
+  deleteCourse,
+  setCourses as setStoreCourses,
+  updateCourse,
+} from './store/coursesReducer';
+import { enrollCourse } from './Dashboard/reducer';
+import Dashboard from './Dashboard';
+import KanbasNavigation from './Navigation';
+import ProtectedRoute from './Account/ProtectedRoute';
+import Session from './Account/Session';
+import Account from './Account';
+import Courses from './Courses';
+import './styles.css';
+
 export default function Kanbas() {
-  const { currentUser } = useSelector(
-      (state: any) => state.accountReducer
-  )
+  const { currentUser } = useSelector((state: any) => state.accountReducer);
   const [courses, setCourses] = useState<any[]>([]);
-  type CourseType = {
-    name: string;
-    description: string;
-    number: string;
-    credits: string;
-    updateId: number | null;
-  };
-  const [course, setCourse] = useState<CourseType>({
+  const [course, setCourse] = useState({
     name: '',
     description: '',
     number: '',
     credits: '',
-    updateId: null
-  })
-  const dispatch = useDispatch()
-  
-  const fetchCourses = async () => {
+    updateId: null,
+  });
+  const [enrolling, setEnrolling] = useState<boolean>(false);
+  const dispatch = useDispatch();
+
+  // 使用 useCallback 稳定 fetchCourses 函数
+  const fetchCourses = useCallback(async () => {
+    if (!currentUser?._id) return; // 确保 currentUser 存在
     try {
       const allCourses = await courseClient.fetchAllCourses();
-      const enrolledCourses = await userClient.findCoursesForUser(
-          currentUser._id
-      );
-      const courses = allCourses.map((course: any) => {
-        if (enrolledCourses.find((c: any) => c._id === course._id)) {
-          return { ...course, enrolled: true };
-        } else {
-          return course;
-        }
-      });
+      const enrolledCourses = await userClient.findCoursesForUser(currentUser._id);
+      const courses = allCourses.map((course: any) => ({
+        ...course,
+        enrolled: !!enrolledCourses.find((c: any) => c._id === course._id),
+      }));
       setCourses(courses);
-      dispatch(await setStoreCourses(courses))
+      dispatch(setStoreCourses(courses));
     } catch (error) {
-      console.error(error);
+      console.error('Error fetching courses:', error);
     }
-  };
+  }, [currentUser?._id, dispatch]);
 
-  // const getUserEnrollments = useCallback(async () => {
-  //   const enrollments = await enrollmentClient.getUserEnrollment(
-  //     currentUser?._id
-  //   )
-  //   dispatch(setEnrollment(enrollments))
-  // }, [dispatch, currentUser?._id])
-
-  const [enrolling, setEnrolling] = useState<boolean>(false);
-  const findCoursesForUser = async () => {
+  // 使用 useCallback 稳定 findCoursesForUser 函数
+  const findCoursesForUser = useCallback(async () => {
+    if (!currentUser?._id) return; // 确保 currentUser 存在
     try {
       const courses = await userClient.findCoursesForUser(currentUser._id);
       setCourses(courses);
-      dispatch(await setStoreCourses(courses))
+      dispatch(setStoreCourses(courses));
     } catch (error) {
-      console.error(error);
+      console.error('Error finding courses for user:', error);
+    }
+  }, [currentUser?._id, dispatch]);
+
+  // 添加/更新/删除课程时调用的函数保持不变
+  const addNewCourseHandler = async () => {
+    if (!course.name || !course.number || !course.credits) {
+      alert('Name, number, and credits are required fields.');
+      return;
+    }
+    try {
+      const newCourse = await userClient.createCourse(course);
+      dispatch(addCourse(newCourse));
+      await enrollmentClient.addEnrollment(currentUser._id, newCourse._id);
+      dispatch(enrollCourse({ userId: currentUser._id, courseId: newCourse._id }));
+      setCourse({ name: '', description: '', number: '', credits: '', updateId: null });
+      enrolling ? fetchCourses() : findCoursesForUser();
+    } catch (error) {
+      console.error('Error adding course:', error);
     }
   };
 
-  const addNewCourseHandler = async () => {
-
-    try {
-      if (!course.name || !course.number || !course.credits) {
-        alert('Name, number, and credits are required fields.');
-        return; 
-      }
-      const newCourse = await userClient.createCourse({
-        name: course.name,
-        credits: course.credits,
-        number: course.number,
-        description: course.description
-      })
-      dispatch(addCourse(newCourse))
-      await enrollmentClient.addEnrollment(currentUser._id,newCourse._id)
-      dispatch(
-          enrollCourse({
-            userId: currentUser._id,
-            courseId: newCourse._id
-          })
-      )
-      setCourse({
-        updateId: null,
-        name: '',
-        number: '',
-        credits: '',
-        description: ''
-      })
-    } catch (error) {
-      console.error('Error adding course:', error)
-    }
-    if (enrolling) {
-      fetchCourses();
-    } else {
-      findCoursesForUser();
-    }
-  }
-
   const updateCourseHandler = async () => {
+    if (!course.name || !course.number || !course.credits) {
+      alert('Name, number, and credits are required fields.');
+      return;
+    }
     try {
-      if (!course.name || !course.number || !course.credits) {
-        alert('Name, number, and credits are required fields.');
-        return; 
-      }
       const updatedCourse = await courseClient.updateCourse({
+        ...course,
         _id: course.updateId,
-        name: course.name,
-        credits: course.credits,
-        number: course.number,
-        description: course.description
-      })
-      dispatch(await updateCourse(updatedCourse))
-      setCourse({
-        updateId: null,
-        name: '',
-        number: '',
-        credits: '',
-        description: ''
-      })
+      });
+      dispatch(updateCourse(updatedCourse));
+      setCourse({ name: '', description: '', number: '', credits: '', updateId: null });
+      enrolling ? fetchCourses() : findCoursesForUser();
     } catch (error) {
-      console.error('Error updating course:', error)
+      console.error('Error updating course:', error);
     }
-    if (enrolling) {
-      fetchCourses();
-    } else {
-      findCoursesForUser();
-    }
-  }
+  };
 
   const deleteCourseHandler = async (courseId: string) => {
     try {
-      await courseClient.deleteCourse(courseId)
-      // @ts-ignore
-      dispatch(deleteCourse(courseId))
+      await courseClient.deleteCourse(courseId);
+      dispatch(deleteCourse(courseId));
+      enrolling ? fetchCourses() : findCoursesForUser();
     } catch (error) {
-      console.error('Error deleting course:', error)
+      console.error('Error deleting course:', error);
     }
-    if (enrolling) {
-      fetchCourses();
-    } else {
-      findCoursesForUser();
-    }
-  }
-
-  const handleSetCourse = async (course: any) => {
-   setCourse(course)
-  }
-  const updateEnrollment = async (courseId: string, enrolled: boolean) => {
-    if (enrolled) {
-      await userClient.enrollIntoCourse(currentUser._id, courseId);
-    } else {
-      await userClient.unenrollFromCourse(currentUser._id, courseId);
-    }
-    setCourses(
-        courses.map((course) => {
-          if (course._id === courseId) {
-            return { ...course, enrolled: enrolled };
-          } else {
-            return course;
-          }
-        })
-    );
-
   };
 
+  // 修复 useEffect 依赖问题
   useEffect(() => {
-    console.log(currentUser)
-    if (enrolling) {
-      fetchCourses();
-    } else {
-      findCoursesForUser();
+    if (currentUser) {
+      enrolling ? fetchCourses() : findCoursesForUser();
     }
-  }, [currentUser, enrolling])
+  }, [currentUser, enrolling, fetchCourses, findCoursesForUser]);
 
   return (
-    // <Provider store={store}>
     <Session>
-      <div id='wd-kanbas'>
+      <div id="wd-kanbas">
         <KanbasNavigation />
-        <div className='wd-main-content-offset p-3'>
+        <div className="wd-main-content-offset p-3">
           <Routes>
+            <Route path="/" element={<Navigate to="Account" />} />
+            <Route path="/Account/*" element={<Account />} />
             <Route
-              path='/'
-              element={<Navigate to='Account' />}
-            />
-            <Route
-              path='/Account/*'
-              element={<Account />}
-            />
-            <Route
-              path='/Dashboard'
+              path="/Dashboard"
               element={
                 <ProtectedRoute>
-                  <Dashboard enrolling={enrolling} setEnrolling={setEnrolling} courses={courses} course={course}  setCourse={handleSetCourse}
-                             addNewCourse={addNewCourseHandler} deleteCourse={deleteCourseHandler} updateCourse={updateCourseHandler}
-                             updateEnrollment={updateEnrollment}
-                             />
+                  <Dashboard
+                    enrolling={enrolling}
+                    setEnrolling={setEnrolling}
+                    courses={courses}
+                    course={course}
+                    setCourse={setCourse}
+                    addNewCourse={addNewCourseHandler}
+                    deleteCourse={deleteCourseHandler}
+                    updateCourse={updateCourseHandler} updateEnrollment={function (courseId: string, enrolled: boolean): void {
+                      throw new Error('Function not implemented.');
+                    } }                  />
                 </ProtectedRoute>
               }
             />
-            <Route
-              path='/Courses/:cid/*'
-              element={
-                <ProtectedRoute>
-                  <Courses />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path='/Calendar'
-              element={<h1>Calendar</h1>}
-            />
-            <Route
-              path='/Inbox'
-              element={<h1>Inbox</h1>}
-            />
+            <Route path="/Courses/:cid/*" element={<ProtectedRoute><Courses /></ProtectedRoute>} />
+            <Route path="/Calendar" element={<h1>Calendar</h1>} />
+            <Route path="/Inbox" element={<h1>Inbox</h1>} />
           </Routes>
         </div>
       </div>
     </Session>
-  )
+  );
 }
