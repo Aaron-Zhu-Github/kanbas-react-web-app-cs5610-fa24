@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { FaCheckCircle, FaBan, FaPencilAlt, FaEye } from "react-icons/fa";
+import { FaCheckCircle, FaPencilAlt, FaEye } from "react-icons/fa";
 import * as client from "../client";
 
 interface Question {
@@ -38,7 +38,7 @@ interface QuizDetailsProps {
 
 function QuizDetails({ preview = false }: QuizDetailsProps) {
     const { cid, qid } = useParams();
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
     const [quiz, setQuiz] = useState<Quiz | null>(null);
     const [loading, setLoading] = useState(true);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);

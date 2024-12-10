@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
 import { Button, Form, Card, Nav } from "react-bootstrap";
-import { FaEllipsisV, FaCheckCircle, FaPlus } from "react-icons/fa";
+// import { FaEllipsisV, FaCheckCircle, FaPlus } from "react-icons/fa";
 import * as client from "../client";
 import { formatDateForInput } from "../../../utils/dateUtils";
 import QuizQuestions from "./QuizQuestions";
-import Preview from "../Preview";
+// import Preview from "../Preview";
 
 interface Quiz {
     _id?: string;
@@ -55,7 +55,7 @@ function QuizEditor() {
         lockQuestionsAfterAnswering: false
     });
 
-    const fetchQuiz = async () => {
+    const fetchQuiz = useCallback(async () => {
         if (qid) {
             try {
                 const response = await client.findQuizById(qid);
@@ -64,11 +64,11 @@ function QuizEditor() {
                 console.error("Error fetching quiz:", error);
             }
         }
-    };
+    }, [qid]);
 
     useEffect(() => {
         fetchQuiz();
-    }, [qid]);
+    }, [fetchQuiz]);
 
     const handleSave = async () => {
         try {

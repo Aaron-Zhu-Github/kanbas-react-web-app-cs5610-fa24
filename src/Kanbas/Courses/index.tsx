@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useState, useCallback} from 'react'
 import {
   Routes,
   Route,
@@ -29,18 +29,18 @@ export default function Courses() {
   const baseRoute = `/Courses/${cid}`
   const [users, setUsers] = useState<any[]>([]);
 
-  const updateUsers = async () => {
+  const updateUsers = useCallback(async () => {
     try {
       const response = await findUsersForCourse(cid);
       setUsers(response);
     } catch (error) {
       console.error('Failed to fetch users:', error);
     }
-  };
+  }, [cid]);
 
   useEffect(() => {
     updateUsers();
-  }, [cid]);
+  }, [cid, updateUsers]);
 
 
   return (

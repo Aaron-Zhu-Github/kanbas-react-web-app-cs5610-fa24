@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { Button, Form, Card, Dropdown } from "react-bootstrap";
-import { FaEllipsisV, FaGripVertical, FaPlus, FaPencilAlt, FaCheck, FaTimes } from "react-icons/fa";
+import { Button, Form, Card } from "react-bootstrap";
+import { FaGripVertical, FaPlus, FaPencilAlt, FaTimes } from "react-icons/fa";
 
 interface Question {
     _id?: string;

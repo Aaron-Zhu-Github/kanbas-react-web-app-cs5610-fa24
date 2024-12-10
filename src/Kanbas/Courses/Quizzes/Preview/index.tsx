@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Button, Form, Card, Alert, ProgressBar, Badge, ListGroup } from "react-bootstrap";
+import { Button, Form, Card, Alert, ProgressBar, Badge } from "react-bootstrap";
 import * as client from "../client";
 import { useSelector } from "react-redux";
-import { isFaculty } from "../../../utils/permissions";
+// import { isFaculty } from "../../../utils/permissions";
 import { FaCheck, FaRegCircle, FaCircle } from "react-icons/fa";
 
 interface Question {
@@ -60,9 +60,32 @@ function QuizPreview() {
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const { currentUser } = useSelector((state: any) => state.accountReducer);
     const [timeRemaining, setTimeRemaining] = useState<number | null>(null);
-    const [remainingAttempts, setRemainingAttempts] = useState<number | null>(null);
+    const [, setRemainingAttempts] = useState<number | null>(null);
     const [answeredQuestions, setAnsweredQuestions] = useState<Set<string>>(new Set());
     const [attemptsCount, setAttemptsCount] = useState<number>(0);
+
+    const handleSubmit = useCallback(async () => {
+        if (!quiz || !currentUser || !qid) return;
+
+        const totalScore = calculateScore();
+        setScore(totalScore);
+        setSubmitted(true);
+
+        const attempt = {
+            quiz: qid as string,
+            user: currentUser._id,
+            answers,
+            score: totalScore,
+            submittedAt: new Date().toISOString()
+        };
+
+        try {
+            const savedAttempt = await client.createQuizAttempt(attempt);
+            setPreviousAttempt(savedAttempt);
+        } catch (error) {
+            console.error("Error saving quiz attempt:", error);
+        }
+    }, [quiz, currentUser, qid, answers]);
 
     useEffect(() => {
         if (startQuiz && quiz?.timeLimit && !submitted) {
@@ -82,7 +105,7 @@ function QuizPreview() {
 
             return () => clearInterval(timer);
         }
-    }, [startQuiz, quiz?.timeLimit, submitted]);
+    }, [startQuiz, quiz?.timeLimit, submitted, handleSubmit]);
 
     useEffect(() => {
         const answered = new Set(Object.keys(answers).filter(key => answers[key]));
@@ -128,10 +151,10 @@ function QuizPreview() {
         return true;
     };
 
-    const getShuffledChoices = useCallback((question: Question) => {
-        if (!quiz?.shuffleAnswers || !question.choices) return question.choices;
-        return [...question.choices].sort(() => Math.random() - 0.5);
-    }, [quiz?.shuffleAnswers]);
+    // const getShuffledChoices = useCallback((question: Question) => {
+    //     if (!quiz?.shuffleAnswers || !question.choices) return question.choices;
+    //     return [...question.choices].sort(() => Math.random() - 0.5);
+    // }, [quiz?.shuffleAnswers]);
 
     const formatTime = (seconds: number): string => {
         const minutes = Math.floor(seconds / 60);
@@ -139,7 +162,7 @@ function QuizPreview() {
         return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
     };
 
-    const fetchQuiz = async () => {
+    const fetchQuiz = useCallback(async () => {
         if (qid) {
             try {
                 const fetchedQuiz = await client.findQuizById(qid);
@@ -149,9 +172,9 @@ function QuizPreview() {
                 console.error("Error fetching quiz:", error);
             }
         }
-    };
+    }, [qid]);
 
-    const fetchPreviousAttempt = async () => {
+    const fetchPreviousAttempt = useCallback(async () => {
         if (qid && currentUser) {
             try {
                 const attempts = await client.findQuizAttemptsByUser(currentUser._id);
@@ -164,12 +187,12 @@ function QuizPreview() {
                 console.error("Error fetching previous attempt:", error);
             }
         }
-    };
+    }, [qid, currentUser]);
 
     useEffect(() => {
         fetchQuiz();
         fetchPreviousAttempt();
-    }, [qid, currentUser]);
+    }, [qid, currentUser, fetchQuiz, fetchPreviousAttempt]);
 
     const handleAnswerChange = (questionId: string, answer: string) => {
         if (quiz?.lockQuestionsAfterAnswering && answers[questionId]) {
@@ -191,29 +214,6 @@ function QuizPreview() {
             }
         });
         return correctAnswers;
-    };
-
-    const handleSubmit = async () => {
-        if (!quiz || !currentUser || !qid) return;
-
-        const totalScore = calculateScore();
-        setScore(totalScore);
-        setSubmitted(true);
-
-        const attempt = {
-            quiz: qid as string,
-            user: currentUser._id,
-            answers,
-            score: totalScore,
-            submittedAt: new Date().toISOString()
-        };
-
-        try {
-            const savedAttempt = await client.createQuizAttempt(attempt);
-            setPreviousAttempt(savedAttempt);
-        } catch (error) {
-            console.error("Error saving quiz attempt:", error);
-        }
     };
 
     const handleStartQuiz = () => {

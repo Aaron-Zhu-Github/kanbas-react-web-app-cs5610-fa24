@@ -7,13 +7,13 @@ import {
   enrollCourse,
   unenrollCourse
 } from './reducer'
-import {
-  addCourse,
-  deleteCourse,
-  updateCourse
-} from '../store/coursesReducer'
-import * as userClient from '../Account/client'
-import * as courseClient from '../Courses/client'
+// import {
+//   addCourse,
+//   deleteCourse,
+//   updateCourse
+// } from '../store/coursesReducer'
+// import * as userClient from '../Account/client'
+// import * as courseClient from '../Courses/client'
 import * as enrollmentClient from './client'
 // import * as db from "../Database";
 
@@ -71,7 +71,7 @@ export default function Dashboard({
   const isFaculty = currentUser?.role === "FACULTY" || currentUser?.role === "ADMIN";
   const isStudent = currentUser?.role === 'STUDENT'
 
-  const [showAllCourses, setShowAllCourses] = useState(isFaculty)
+  const [showAllCourses, ] = useState(isFaculty)
 
     const isEnrolledCourse = (course: any) => {
         if (!course || course._id == null) {
@@ -83,9 +83,9 @@ export default function Dashboard({
         );
     }
 
-  const userCourses = courses.filter((course: any) =>
-        isEnrolledCourse(course)
-);
+//   const userCourses = courses.filter((course: any) =>
+//         isEnrolledCourse(course)
+// );
 
   
   const enrollCourseHandle = async (courseId: any) => {

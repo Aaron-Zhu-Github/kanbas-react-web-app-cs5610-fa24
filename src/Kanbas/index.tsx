@@ -35,6 +35,7 @@ export default function Kanbas() {
     updateId: null
   })
   const dispatch = useDispatch()
+  
   const fetchCourses = async () => {
     try {
       const allCourses = await courseClient.fetchAllCourses();
@@ -55,12 +56,13 @@ export default function Kanbas() {
     }
   };
 
-  const getUserEnrollments = useCallback(async () => {
-    const enrollments = await enrollmentClient.getUserEnrollment(
-      currentUser?._id
-    )
-    dispatch(setEnrollment(enrollments))
-  }, [dispatch, currentUser?._id])
+  // const getUserEnrollments = useCallback(async () => {
+  //   const enrollments = await enrollmentClient.getUserEnrollment(
+  //     currentUser?._id
+  //   )
+  //   dispatch(setEnrollment(enrollments))
+  // }, [dispatch, currentUser?._id])
+
   const [enrolling, setEnrolling] = useState<boolean>(false);
   const findCoursesForUser = async () => {
     try {
