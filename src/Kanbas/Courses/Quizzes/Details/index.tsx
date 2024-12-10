@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { FaCheckCircle, FaPencilAlt, FaEye } from "react-icons/fa";
 import * as client from "../client";
 

@@ -204,7 +204,7 @@ function QuizPreview() {
         }));
     };
 
-    const calculateScore = (): number => {
+    const calculateScore = useCallback((): number => {
         if (!quiz) return 0;
         let correctAnswers = 0;
         quiz.questions.forEach(question => {
@@ -214,7 +214,7 @@ function QuizPreview() {
             }
         });
         return correctAnswers;
-    };
+    }, [quiz, answers]);
 
     const handleStartQuiz = () => {
         setStartQuiz(true);
