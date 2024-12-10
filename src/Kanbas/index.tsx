@@ -77,7 +77,7 @@ export default function Kanbas() {
     try {
       if (!course.name || !course.number || !course.credits) {
         alert('Name, number, and credits are required fields.');
-        return; // 终止函数执行
+        return; 
       }
       const newCourse = await userClient.createCourse({
         name: course.name,
@@ -114,7 +114,7 @@ export default function Kanbas() {
     try {
       if (!course.name || !course.number || !course.credits) {
         alert('Name, number, and credits are required fields.');
-        return; // 终止函数执行
+        return; 
       }
       const updatedCourse = await courseClient.updateCourse({
         _id: course.updateId,

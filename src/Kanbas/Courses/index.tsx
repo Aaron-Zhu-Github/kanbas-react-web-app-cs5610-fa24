@@ -31,7 +31,6 @@ export default function Courses() {
 
   const updateUsers = async () => {
     try {
-      // 假设 findUsersForCourse 是一个异步函数，用于根据课程ID获取用户列表
       const response = await findUsersForCourse(cid);
       setUsers(response);
     } catch (error) {
@@ -39,7 +38,6 @@ export default function Courses() {
     }
   };
 
-  // 使用 useEffect 钩子在组件加载时执行 updateUsers
   useEffect(() => {
     updateUsers();
   }, [cid]);
