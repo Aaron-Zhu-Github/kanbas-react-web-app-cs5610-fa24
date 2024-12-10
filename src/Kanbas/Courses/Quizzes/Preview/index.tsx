@@ -64,6 +64,18 @@ function QuizPreview() {
     const [answeredQuestions, setAnsweredQuestions] = useState<Set<string>>(new Set());
     const [attemptsCount, setAttemptsCount] = useState<number>(0);
 
+    const calculateScore = useCallback((): number => {
+        if (!quiz) return 0;
+        let correctAnswers = 0;
+        quiz.questions.forEach(question => {
+            const userAnswer = answers[question._id || ""];
+            if (userAnswer === question.correctAnswer) {
+                correctAnswers += question.points;
+            }
+        });
+        return correctAnswers;
+    }, [quiz, answers]);
+
     const handleSubmit = useCallback(async () => {
         if (!quiz || !currentUser || !qid) return;
 
@@ -85,7 +97,7 @@ function QuizPreview() {
         } catch (error) {
             console.error("Error saving quiz attempt:", error);
         }
-    }, [quiz, currentUser, qid, answers]);
+    }, [quiz, currentUser, qid, answers, calculateScore]);
 
     useEffect(() => {
         if (startQuiz && quiz?.timeLimit && !submitted) {
@@ -203,18 +215,6 @@ function QuizPreview() {
             [questionId]: answer
         }));
     };
-
-    const calculateScore = useCallback((): number => {
-        if (!quiz) return 0;
-        let correctAnswers = 0;
-        quiz.questions.forEach(question => {
-            const userAnswer = answers[question._id || ""];
-            if (userAnswer === question.correctAnswer) {
-                correctAnswers += question.points;
-            }
-        });
-        return correctAnswers;
-    }, [quiz, answers]);
 
     const handleStartQuiz = () => {
         setStartQuiz(true);
