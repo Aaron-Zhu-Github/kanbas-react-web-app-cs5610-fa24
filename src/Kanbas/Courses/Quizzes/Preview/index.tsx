@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Button, Form, Card, Alert, ProgressBar, Badge } from "react-bootstrap";
+import { Button, Form, Card, Alert, ProgressBar, Badge, ListGroup } from "react-bootstrap";
 import * as client from "../client";
 import { useSelector } from "react-redux";
-// import { isFaculty } from "../../../utils/permissions";
+import { isFaculty } from "../../../utils/permissions";
 import { FaCheck, FaRegCircle, FaCircle } from "react-icons/fa";
 
 interface Question {
@@ -60,44 +60,9 @@ function QuizPreview() {
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const { currentUser } = useSelector((state: any) => state.accountReducer);
     const [timeRemaining, setTimeRemaining] = useState<number | null>(null);
-    const [, setRemainingAttempts] = useState<number | null>(null);
+    const [remainingAttempts, setRemainingAttempts] = useState<number | null>(null);
     const [answeredQuestions, setAnsweredQuestions] = useState<Set<string>>(new Set());
     const [attemptsCount, setAttemptsCount] = useState<number>(0);
-
-    const calculateScore = useCallback((): number => {
-        if (!quiz) return 0;
-        let correctAnswers = 0;
-        quiz.questions.forEach(question => {
-            const userAnswer = answers[question._id || ""];
-            if (userAnswer === question.correctAnswer) {
-                correctAnswers += question.points;
-            }
-        });
-        return correctAnswers;
-    }, [quiz, answers]);
-
-    const handleSubmit = useCallback(async () => {
-        if (!quiz || !currentUser || !qid) return;
-
-        const totalScore = calculateScore();
-        setScore(totalScore);
-        setSubmitted(true);
-
-        const attempt = {
-            quiz: qid as string,
-            user: currentUser._id,
-            answers,
-            score: totalScore,
-            submittedAt: new Date().toISOString()
-        };
-
-        try {
-            const savedAttempt = await client.createQuizAttempt(attempt);
-            setPreviousAttempt(savedAttempt);
-        } catch (error) {
-            console.error("Error saving quiz attempt:", error);
-        }
-    }, [quiz, currentUser, qid, answers, calculateScore]);
 
     useEffect(() => {
         if (startQuiz && quiz?.timeLimit && !submitted) {
@@ -117,7 +82,7 @@ function QuizPreview() {
 
             return () => clearInterval(timer);
         }
-    }, [startQuiz, quiz?.timeLimit, submitted, handleSubmit]);
+    }, [startQuiz, quiz?.timeLimit, submitted]);
 
     useEffect(() => {
         const answered = new Set(Object.keys(answers).filter(key => answers[key]));
@@ -154,19 +119,26 @@ function QuizPreview() {
         fetchAttempts();
     }, [currentUser, qid]);
 
+    const isQuizClosed = (quiz: Quiz): boolean => {
+        const now = new Date();
+        const dueDate = quiz.dueDate ? new Date(quiz.dueDate) : null;
+        return dueDate ? now > dueDate : false;
+    };
+
     const canAttemptQuiz = () => {
         if (!quiz) return false;
         if (!quiz.published) return false;
         if (currentUser?.role === "FACULTY" || currentUser?.role === "ADMIN") return true;
+        if (isQuizClosed(quiz)) return false;
         if (!quiz.multipleAttempts && attemptsCount > 0) return false;
         if (quiz.maxAttempts && attemptsCount >= quiz.maxAttempts) return false;
         return true;
     };
 
-    // const getShuffledChoices = useCallback((question: Question) => {
-    //     if (!quiz?.shuffleAnswers || !question.choices) return question.choices;
-    //     return [...question.choices].sort(() => Math.random() - 0.5);
-    // }, [quiz?.shuffleAnswers]);
+    const getShuffledChoices = useCallback((question: Question) => {
+        if (!quiz?.shuffleAnswers || !question.choices) return question.choices;
+        return [...question.choices].sort(() => Math.random() - 0.5);
+    }, [quiz?.shuffleAnswers]);
 
     const formatTime = (seconds: number): string => {
         const minutes = Math.floor(seconds / 60);
@@ -174,7 +146,7 @@ function QuizPreview() {
         return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
     };
 
-    const fetchQuiz = useCallback(async () => {
+    const fetchQuiz = async () => {
         if (qid) {
             try {
                 const fetchedQuiz = await client.findQuizById(qid);
@@ -184,9 +156,9 @@ function QuizPreview() {
                 console.error("Error fetching quiz:", error);
             }
         }
-    }, [qid]);
+    };
 
-    const fetchPreviousAttempt = useCallback(async () => {
+    const fetchPreviousAttempt = async () => {
         if (qid && currentUser) {
             try {
                 const attempts = await client.findQuizAttemptsByUser(currentUser._id);
@@ -199,12 +171,12 @@ function QuizPreview() {
                 console.error("Error fetching previous attempt:", error);
             }
         }
-    }, [qid, currentUser]);
+    };
 
     useEffect(() => {
         fetchQuiz();
         fetchPreviousAttempt();
-    }, [qid, currentUser, fetchQuiz, fetchPreviousAttempt]);
+    }, [qid, currentUser]);
 
     const handleAnswerChange = (questionId: string, answer: string) => {
         if (quiz?.lockQuestionsAfterAnswering && answers[questionId]) {
@@ -214,6 +186,41 @@ function QuizPreview() {
             ...prev,
             [questionId]: answer
         }));
+    };
+
+    const calculateScore = (): number => {
+        if (!quiz) return 0;
+        let correctAnswers = 0;
+        quiz.questions.forEach(question => {
+            const userAnswer = answers[question._id || ""];
+            if (userAnswer === question.correctAnswer) {
+                correctAnswers += question.points;
+            }
+        });
+        return correctAnswers;
+    };
+
+    const handleSubmit = async () => {
+        if (!quiz || !currentUser || !qid) return;
+
+        const totalScore = calculateScore();
+        setScore(totalScore);
+        setSubmitted(true);
+
+        const attempt = {
+            quiz: qid as string,
+            user: currentUser._id,
+            answers,
+            score: totalScore,
+            submittedAt: new Date().toISOString()
+        };
+
+        try {
+            const savedAttempt = await client.createQuizAttempt(attempt);
+            setPreviousAttempt(savedAttempt);
+        } catch (error) {
+            console.error("Error saving quiz attempt:", error);
+        }
     };
 
     const handleStartQuiz = () => {
@@ -304,6 +311,7 @@ function QuizPreview() {
                             <strong>Allowed Attempts:</strong> {quiz.multipleAttempts ? `${quiz.maxAttempts} attempts` : "1 attempt"}<br />
                             <strong>Due Date:</strong> {quiz.dueDate ? new Date(quiz.dueDate).toLocaleString() : "Not set"}<br />
                             <strong>Available From:</strong> {quiz.availableFromDate ? new Date(quiz.availableFromDate).toLocaleString() : "Not set"}<br />
+                            <strong>Status:</strong> {isQuizClosed(quiz) ? <span className="text-danger">Closed</span> : <span className="text-success">Open</span>}
                         </div>
                     </Card.Body>
                 </Card>
@@ -322,7 +330,13 @@ function QuizPreview() {
                     </Alert>
                 )}
 
-                {currentUser?.role !== "FACULTY" && !canAttemptQuiz() && (
+                {currentUser?.role !== "FACULTY" && isQuizClosed(quiz) && (
+                    <Alert variant="danger">
+                        This quiz is closed. The due date has passed.
+                    </Alert>
+                )}
+
+                {currentUser?.role !== "FACULTY" && !canAttemptQuiz() && !isQuizClosed(quiz) && (
                     <Alert variant="warning">
                         {!quiz.multipleAttempts && attemptsCount > 0 ? 
                             "You have already used your attempt for this quiz." :

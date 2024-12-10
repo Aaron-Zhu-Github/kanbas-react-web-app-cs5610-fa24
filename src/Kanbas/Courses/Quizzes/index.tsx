@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { Link, useParams } from "react-router-dom";
-import { FaSearch, FaEllipsisV, FaCheckCircle, FaBan, FaPlus, FaCaretDown } from "react-icons/fa";
+import React, { useState, useEffect } from "react";
+import { Link, useParams, useNavigate } from "react-router-dom";
+import { FaSearch, FaEllipsisV, FaTrash, FaCheckCircle, FaBan, FaPlus, FaCaretDown } from "react-icons/fa";
 import { BsGripVertical } from "react-icons/bs";
 import { Dropdown, Modal } from "react-bootstrap";
 import { formatDate } from "../../utils/dateUtils";
@@ -21,6 +21,21 @@ interface Quiz {
     assignmentGroup?: "QUIZZES" | "EXAMS" | "ASSIGNMENTS" | "PROJECT";
 }
 
+function getQuizStatus(quiz: Quiz): { status: string; className: string } {
+    const now = new Date();
+    const dueDate = quiz.dueDate ? new Date(quiz.dueDate) : null;
+    
+    if (!quiz.published) {
+        return { status: 'Not Published', className: 'text-secondary' };
+    }
+    
+    if (dueDate && now > dueDate) {
+        return { status: 'Closed', className: 'text-danger' };
+    }
+    
+    return { status: 'Published', className: 'text-success' };
+}
+
 function QuizList() {
     const { cid } = useParams();
     const [quizzes, setQuizzes] = useState<Quiz[]>([]);
@@ -30,14 +45,14 @@ function QuizList() {
     const [filterType, setFilterType] = useState<string>("ALL");
     const [filterGroup, setFilterGroup] = useState<string>("ALL");
     const { currentUser } = useSelector((state: any) => state.accountReducer);
-    debugger
     const isFaculty = currentUser?.role === "FACULTY" || currentUser?.role === "ADMIN";
     const [showCopyModal, setShowCopyModal] = useState(false);
     const [selectedQuiz, setSelectedQuiz] = useState<Quiz | null>(null);
     const [courses, setCourses] = useState<any[]>([]);
     const [selectedCourse, setSelectedCourse] = useState<string>("");
+    const navigate = useNavigate();
 
-    const fetchQuizzes = useCallback(async () => {
+    const fetchQuizzes = async () => {
         try {
             if (cid) {
                 const fetchedQuizzes = await client.findQuizzesForCourse(cid);
@@ -48,11 +63,11 @@ function QuizList() {
         } finally {
             setLoading(false);
         }
-    }, [cid]);
+    };
 
     useEffect(() => {
         fetchQuizzes();
-    }, [fetchQuizzes]);
+    }, [cid]);
 
     useEffect(() => {
         const fetchCourses = async () => {
@@ -79,8 +94,8 @@ function QuizList() {
                     quizType: "GRADED_QUIZ",
                     assignmentGroup: "QUIZZES"
                 };
-                await client.createQuiz(cid, newQuiz);
-                fetchQuizzes();
+                const createdQuiz = await client.createQuiz(cid, newQuiz);
+                navigate(`/Kanbas/Courses/${cid}/Quizzes/${createdQuiz._id}`);
             }
         } catch (error) {
             console.error("Error creating quiz:", error);
@@ -287,8 +302,8 @@ function QuizList() {
                                                     </Link>
                                                 </h6>
                                                 <small>
-                                                    <span className="text-danger">
-                                                        <strong>{quiz.published ? 'Published' : 'Not Published'}</strong>
+                                                    <span className={getQuizStatus(quiz).className}>
+                                                        <strong>{getQuizStatus(quiz).status}</strong>
                                                     </span>{' '}
                                                     | <strong>Not available until</strong> {formatDateString(quiz.availableFromDate)} |
                                                     <br />
