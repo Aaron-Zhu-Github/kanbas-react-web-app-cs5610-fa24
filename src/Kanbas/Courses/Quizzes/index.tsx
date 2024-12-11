@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import { FaSearch, FaEllipsisV, FaTrash, FaCheckCircle, FaBan, FaPlus, FaCaretDown } from "react-icons/fa";
+import { FaSearch, FaEllipsisV, FaCheckCircle, FaBan, FaPlus, FaCaretDown } from "react-icons/fa";
 import { BsGripVertical } from "react-icons/bs";
 import { Dropdown, Modal } from "react-bootstrap";
 import { formatDate } from "../../utils/dateUtils";
